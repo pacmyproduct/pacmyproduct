@@ -30,6 +30,8 @@ interface CatalogProduct {
   moq: number;
   features: string[];
   displayName?: string;
+  overview?: string;
+  brandingCapabilities?: string[];
   budget?: string;
   price?: number | string;
 }
@@ -539,6 +541,8 @@ function BudgetCollectionContent() {
                               moq={p.moq}
                               isProduct={true}
                               displayName={p.displayName}
+                              overview={p.overview}
+                              brandingCapabilities={p.brandingCapabilities}
                               className="glass-card hover:shadow-xl hover:shadow-gray-200/40 border-gray-200/60"
                             />
                           );

@@ -14,6 +14,7 @@ import { resolveProductImage, resolveCategoryImage } from "@/lib/imageResolver";
 import { buildEnquiryUrl } from "@/lib/enquiryHelper";
 import { getCanonicalCategoryName, getCanonicalSubcategoryName } from "@/lib/slugResolver";
 import { toDisplayName } from "@/lib/displayNames";
+import { resolveProductBranding } from "@/lib/catalogDefaults";
 
 interface Category {
   id: string;
@@ -98,7 +99,7 @@ export default function PromoMerchPage() {
           description: p.description,
           imageUrl: resolveProductImage(p) || "/images/joiningkit.png",
           cta: "Get Quote",
-          brandingOptions: p.features?.slice(0, 2) || ["Logo Branding", "Custom Finishes"],
+          brandingOptions: resolveProductBranding(p).slice(0, 3),
           href: buildEnquiryUrl({
             category: p.category,
             subcategory: p.subcategory,

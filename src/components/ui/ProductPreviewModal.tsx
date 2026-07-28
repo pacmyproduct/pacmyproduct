@@ -9,6 +9,7 @@ import { getCanonicalSubcategoryName, getCanonicalCategoryName, cleanProductTitl
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getDisplayCategoryName, getDisplaySubcategoryName, toDisplayName } from "@/lib/displayNames";
+import { resolveProductOverview, resolveProductBranding } from "@/lib/catalogDefaults";
 
 export function ProductPreviewModal() {
   const { isOpen, product, closePreview } = useProductPreview();
@@ -270,43 +271,62 @@ export function ProductPreviewModal() {
                 </h3>
               </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+              {/* Product Overview (Dynamic & Runtime Resolved) */}
+              <div className="space-y-2 pt-1">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#D32F2F]">
                   Product Overview
                 </h4>
-                <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                  {product.description || "Curated premium corporate solution designed with high-quality materials and customized branding for employee welcome swag or executive drops."}
-                </p>
+                {(() => {
+                  const overviewText = resolveProductOverview(product);
+                  const lines = overviewText.split("\n");
+                  return (
+                    <div className="space-y-1 text-xs sm:text-sm text-gray-600 leading-relaxed font-medium">
+                      {lines.map((line, idx) => {
+                        const trimmed = line.trim();
+                        if (!trimmed) return <div key={idx} className="h-1" />;
+                        if (trimmed.startsWith("•") || trimmed.startsWith("-") || trimmed.startsWith("*")) {
+                          const content = trimmed.replace(/^[\•\-\*]\s*/, "");
+                          return (
+                            <div key={idx} className="flex items-start gap-2 pl-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#EF5350] mt-1.5 flex-shrink-0" />
+                              <span>{content}</span>
+                            </div>
+                          );
+                        }
+                        if (/^\d+\.\s/.test(trimmed)) {
+                          const num = trimmed.match(/^(\d+)\.\s/)?.[1];
+                          const content = trimmed.replace(/^\d+\.\s*/, "");
+                          return (
+                            <div key={idx} className="flex items-start gap-2 pl-1">
+                              <span className="font-bold text-[#D32F2F] text-xs flex-shrink-0">{num}.</span>
+                              <span>{content}</span>
+                            </div>
+                          );
+                        }
+                        if (trimmed.endsWith(":") || (idx === 0 && !trimmed.includes("."))) {
+                          return (
+                            <h5 key={idx} className="font-bold text-gray-900 text-xs mt-2.5 mb-1 uppercase tracking-wider">
+                              {trimmed}
+                            </h5>
+                          );
+                        }
+                        return <p key={idx}>{trimmed}</p>;
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
 
-              {/* Specifications / Features */}
-              {product.features && product.features.length > 0 && (
-                <div className="space-y-2 pt-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                    Product Specifications
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {product.features.map((feature, i) => (
-                      <div key={feature + i} className="flex items-center gap-2 text-xs font-semibold text-gray-600">
-                        <span className="w-1.5 h-1.5 bg-[#EF5350] rounded-full flex-shrink-0" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Available Branding options (fallback list if none specified) */}
-              <div className="space-y-2 pt-2">
+              {/* Branding Capabilities (Dynamic Enterprise Chips) */}
+              <div className="space-y-2 pt-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   Branding Capabilities
                 </h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {["Laser Engraving", "Screen Printing", "DTF Multi-Color Print", "Blind Embossing"].map((cap) => (
+                <div className="flex flex-wrap gap-2">
+                  {resolveProductBranding(product).map((cap) => (
                     <span
                       key={cap}
-                      className="px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-200 text-[10px] font-bold text-gray-600 uppercase tracking-wider"
+                      className="px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2]/60 text-[11px] font-bold text-[#6B6B63] uppercase tracking-wider hover:border-[#EF5350]/50 hover:bg-white hover:shadow-xs transition-all cursor-default"
                     >
                       {cap}
                     </span>

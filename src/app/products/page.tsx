@@ -28,6 +28,8 @@ interface CatalogProduct {
   moq: number;
   features: string[];
   displayName?: string;
+  overview?: string;
+  brandingCapabilities?: string[];
   budget?: string;
 }
 
@@ -682,6 +684,8 @@ function ProductsPageContent() {
                           images={product.images}
                           features={product.features}
                           displayName={product.displayName}
+                          overview={product.overview}
+                          brandingCapabilities={product.brandingCapabilities}
                         />
                       </motion.div>
                     ))}

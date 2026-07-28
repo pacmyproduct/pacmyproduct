@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   if (template) {
     let csvContent = "";
     if (template === "products") {
-      csvContent = "title,slug,description,shortDescription,category,subcategory,brand,moq,price,status\nSample Backpack,sample-backpack,Premium heavy canvas backpack with laptop sleeve,Water-resistant business backpack,bags,backpacks,Puma,50,1200,PUBLISHED";
+      csvContent = "title,slug,description,shortDescription,overview,brandingCapabilities,category,subcategory,brand,moq,price,status\nSample Backpack,sample-backpack,Premium heavy canvas backpack with laptop sleeve,Water-resistant business backpack,,,bags,backpacks,Puma,50,1200,PUBLISHED";
     } else if (template === "brands") {
       csvContent = "name,slug,logo,industry,category,description,order\nSample Brand,sample-brand,https://res.cloudinary.com/dncupx9ul/image/upload/v1/brands/sample.png,Wearables,Smartwatches,Curated tech wearables,1";
     } else if (template === "categories") {
@@ -92,6 +92,11 @@ export async function POST(req: Request) {
           const subcategory = row.subcategory || category;
           const budgetVal = row.budget || row.Budget || row["Budget Range"] || row["budget range"] || row["BudgetRange"] || row["budgetRange"];
           const displayNameVal = row["Display Name"] || row["display name"] || row.displayName || row.DisplayName || row["display_name"];
+          const overviewVal = row.overview || row.Overview || "";
+          const brandingVal = row["brandingCapabilities"] || row["Branding Capabilities"] || row.brandingCapabilities || row.branding || row.Branding || "";
+          const brandingArr = typeof brandingVal === "string" && brandingVal.trim()
+            ? brandingVal.split(/;|,/).map((s: string) => s.trim()).filter(Boolean)
+            : Array.isArray(brandingVal) ? brandingVal : [];
 
           const canonicalCat = getCanonicalCategorySlug(category);
           const canonicalSub = getCanonicalSubcategorySlug(subcategory);
@@ -141,6 +146,8 @@ export async function POST(req: Request) {
                     deletedBy: null,
                     ...(budgetVal ? { "specifications.budget": budgetVal } : {}),
                     ...(displayNameVal ? { "specifications.displayName": displayNameVal } : {}),
+                    ...(overviewVal ? { overview: overviewVal } : {}),
+                    ...(brandingArr.length > 0 ? { brandingCapabilities: brandingArr } : {}),
                   },
                 }
               );
@@ -164,6 +171,8 @@ export async function POST(req: Request) {
                     active: row.status !== "HIDDEN",
                     ...(budgetVal ? { "specifications.budget": budgetVal } : {}),
                     ...(displayNameVal ? { "specifications.displayName": displayNameVal } : {}),
+                    ...(overviewVal ? { overview: overviewVal } : {}),
+                    ...(brandingArr.length > 0 ? { brandingCapabilities: brandingArr } : {}),
                   },
                 }
               );
@@ -177,6 +186,8 @@ export async function POST(req: Request) {
               slug,
               description: row.description || "",
               shortDescription: row.shortDescription || "",
+              overview: overviewVal || "",
+              brandingCapabilities: brandingArr,
               category: canonicalCat,
               subcategory: canonicalSub,
               brand: row.brand || "PacMyProduct",

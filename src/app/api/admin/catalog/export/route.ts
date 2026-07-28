@@ -80,6 +80,8 @@ export async function GET(req: Request) {
         row["Slug"] = rec.slug || "";
         row["Description"] = rec.description || "";
         row["Short Description"] = rec.shortDescription || "";
+        row["Overview"] = rec.overview || "";
+        row["Branding Capabilities"] = Array.isArray(rec.brandingCapabilities) ? rec.brandingCapabilities.join("; ") : "";
         row["Category"] = rec.category || "";
         row["Subcategory"] = rec.subcategory || "";
         row["Brand"] = rec.brand || "";

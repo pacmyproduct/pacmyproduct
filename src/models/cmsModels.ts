@@ -87,6 +87,8 @@ const ProductSchema = new Schema(
     slug: { type: String, required: true, unique: true, index: true },
     description: String,
     shortDescription: String,
+    overview: { type: String, default: "" },
+    brandingCapabilities: { type: [String], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", index: true },
     subCategoryId: { type: Schema.Types.ObjectId, ref: "Subcategory", index: true },
     brandId: { type: Schema.Types.ObjectId, ref: "Brand", index: true },

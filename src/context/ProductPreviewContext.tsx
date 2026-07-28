@@ -13,6 +13,8 @@ export interface PreviewProduct {
   brand?: string;
   images?: string[];
   features?: string[];
+  overview?: string;
+  brandingCapabilities?: string[];
   name?: string;
   displayName?: string;
   budget?: string;

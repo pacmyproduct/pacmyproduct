@@ -7,6 +7,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import * as XLSX from "xlsx";
 import { ImageUploader } from "./ImageUploader";
 import { getCanonicalCategoryName, getCanonicalSubcategoryName, cleanProductTitle } from "@/lib/slugResolver";
+import { getCategoryDefaultOverview, getCategoryDefaultBranding } from "@/lib/catalogDefaults";
 
 interface ProductRecord {
   id: string;
@@ -14,6 +15,10 @@ interface ProductRecord {
   slug: string;
   description: string;
   shortDescription?: string;
+  overview?: string;
+  brandingCapabilities?: string[];
+  rawOverview?: string;
+  rawBrandingCapabilities?: string[];
   category: string;
   subcategory: string;
   brand?: string;
@@ -43,6 +48,8 @@ const emptyProduct = {
   slug: "",
   description: "",
   shortDescription: "",
+  overview: "",
+  brandingCapabilities: [] as string[],
   category: "",
   subcategory: "",
   brand: "",
@@ -245,6 +252,8 @@ export function ProductManager() {
       slug: product.slug,
       description: product.description,
       shortDescription: product.shortDescription || "",
+      overview: product.rawOverview !== undefined ? product.rawOverview : (product.overview || ""),
+      brandingCapabilities: product.rawBrandingCapabilities !== undefined ? product.rawBrandingCapabilities : (product.brandingCapabilities || []),
       category: product.category,
       subcategory: product.subcategory,
       brand: product.brand || "",
@@ -288,6 +297,38 @@ export function ProductManager() {
 
       return next;
     });
+  };
+
+  const [newBrandingTag, setNewBrandingTag] = useState("");
+
+  const handleAddBrandingTag = (e?: React.MouseEvent | React.KeyboardEvent) => {
+    if (e) e.preventDefault();
+    if (!newBrandingTag.trim()) return;
+    const tag = newBrandingTag.trim();
+    if (!form.brandingCapabilities.includes(tag)) {
+      setForm((prev) => ({
+        ...prev,
+        brandingCapabilities: [...prev.brandingCapabilities, tag],
+      }));
+    }
+    setNewBrandingTag("");
+  };
+
+  const handleRemoveBrandingTag = (tagToRemove: string) => {
+    setForm((prev) => ({
+      ...prev,
+      brandingCapabilities: prev.brandingCapabilities.filter((t) => t !== tagToRemove),
+    }));
+  };
+
+  const handleLoadCategoryDefaults = () => {
+    const defaultOverview = getCategoryDefaultOverview(form.category, form.subcategory);
+    const defaultBranding = getCategoryDefaultBranding(form.category, form.subcategory);
+    setForm((prev) => ({
+      ...prev,
+      overview: defaultOverview,
+      brandingCapabilities: [...defaultBranding],
+    }));
   };
 
 
@@ -336,6 +377,8 @@ export function ProductManager() {
         slug: finalSlug,
         description: form.description,
         shortDescription: form.shortDescription,
+        overview: form.overview,
+        brandingCapabilities: form.brandingCapabilities,
         category: form.category,
         subcategory: form.subcategory,
         brand: form.brand,
@@ -1016,6 +1059,92 @@ export function ProductManager() {
                   Description
                   <textarea value={form.description} onChange={(e) => updateForm("description", e.target.value)} rows={3} className="mt-2 w-full rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-sm outline-none focus:border-[#D32F2F]" />
                 </label>
+              </div>
+
+              {/* Dynamic Metadata & Branding Capabilities Section */}
+              <div className="md:col-span-2 border-t border-b border-[#E9E1D5] py-4 my-2 space-y-4 text-left">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-[#D32F2F]">
+                      Dynamic Product Overview & Branding Capabilities
+                    </h3>
+                    <p className="text-[11px] text-[#6B6B63]">
+                      If left empty, system automatically resolves category defaults at runtime.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLoadCategoryDefaults}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-1.5 text-xs font-bold text-[#C62828] hover:bg-[#FAF9F6] shadow-sm transition"
+                  >
+                    Load Category Defaults
+                  </button>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-[#C62828] uppercase tracking-wider">
+                    Product Overview (Custom Override)
+                  </label>
+                  <textarea
+                    value={form.overview}
+                    onChange={(e) => updateForm("overview", e.target.value)}
+                    rows={4}
+                    placeholder="Enter custom Overview (or leave blank to inherit category defaults). Supports paragraphs, bullet points (• or -), and line breaks."
+                    className="w-full rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-sm outline-none focus:border-[#D32F2F] leading-relaxed font-sans"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-[#C62828] uppercase tracking-wider">
+                    Branding Capabilities (Custom Chips)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newBrandingTag}
+                      onChange={(e) => setNewBrandingTag(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddBrandingTag();
+                        }
+                      }}
+                      placeholder="Type branding method (e.g. Screen Printing, Laser Engraving) & press Enter"
+                      className="flex-1 rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-xs outline-none focus:border-[#D32F2F]"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddBrandingTag}
+                      className="rounded-lg bg-[#C62828] px-3 py-2 text-xs font-bold text-white hover:bg-[#D32F2F]"
+                    >
+                      Add Chip
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-1.5">
+                    {form.brandingCapabilities && form.brandingCapabilities.length > 0 ? (
+                      form.brandingCapabilities.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2] text-xs font-bold text-[#6B6B63]"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveBrandingTag(tag)}
+                            className="hover:text-[#D32F2F] text-gray-400 p-0.5 rounded-full"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-[#9A9387] italic">
+                        No custom chips set. Category defaults will be resolved automatically.
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <label className="flex items-center gap-2 pt-6 text-sm font-bold text-[#C62828] cursor-pointer">

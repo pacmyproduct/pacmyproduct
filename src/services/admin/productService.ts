@@ -8,6 +8,7 @@ import { ProductModel } from "@/models/cmsModels";
 import { resolveProductImage } from "@/lib/imageResolver";
 import { getCanonicalCategorySlug, getCanonicalSubcategorySlug, getCategorySlugAliases, getSubcategorySlugAliases, cleanProductTitle, getCanonicalCategoryName, isPaperWeightProduct } from "@/lib/slugResolver";
 import { listAllCategories, listAllSubcategories } from "@/services/admin/taxonomyService";
+import { resolveProductOverview, resolveProductBranding } from "@/lib/catalogDefaults";
 
 export function listProducts(): ProductRecord[] {
   return listRecords("products").filter((product) => product.active).map(p => {
@@ -438,12 +439,22 @@ const mapMongoProduct = (product: any): ProductRecord => {
   const images = [matchedImage, ...sourceImages].filter((image, index, self) => image && self.indexOf(image) === index);
   const finalFeaturedImage = matchedImage || images[0] || "";
 
+  const rawOverview = typeof product.overview === "string" ? product.overview : "";
+  const rawBrandingCapabilities = Array.isArray(product.brandingCapabilities) ? product.brandingCapabilities : [];
+
+  const overview = resolveProductOverview({ overview: rawOverview, category, subcategory });
+  const brandingCapabilities = resolveProductBranding({ brandingCapabilities: rawBrandingCapabilities, category, subcategory });
+
   return {
     id: String(product._id),
     title: cleanProductTitle(title),
     slug: product.slug,
     description: product.description || "",
     shortDescription: product.shortDescription,
+    overview,
+    brandingCapabilities,
+    rawOverview,
+    rawBrandingCapabilities,
     category,
     subcategory,
     brand: product.brand,
@@ -565,6 +576,8 @@ export async function createProduct(input: Omit<ProductRecord, "id" | "createdAt
       slug: input.slug,
       description: input.description,
       shortDescription: input.shortDescription,
+      overview: input.overview || "",
+      brandingCapabilities: Array.isArray(input.brandingCapabilities) ? input.brandingCapabilities : [],
       category: canonicalCat,
       subcategory: canonicalSub,
       brand: input.brand,

@@ -34,6 +34,8 @@ interface ProductCardProps {
   images?: string[];
   features?: string[];
   displayName?: string;
+  overview?: string;
+  brandingCapabilities?: string[];
 }
 
 export function ProductCard({ 
@@ -53,7 +55,9 @@ export function ProductCard({
   isProduct = true,
   images = [],
   features = [],
-  displayName
+  displayName,
+  overview,
+  brandingCapabilities
 }: ProductCardProps) {
   const { addToShortlist, removeFromShortlist, isInShortlist } = useShortlist();
   const { openPreview } = useProductPreview();
@@ -91,7 +95,9 @@ export function ProductCard({
         brand,
         images: images.length > 0 ? images : [displayImage],
         features: features.length > 0 ? features : brandingOptions,
-        displayName
+        displayName,
+        overview,
+        brandingCapabilities
       });
       return;
     }
@@ -112,7 +118,9 @@ export function ProductCard({
         brand,
         images: images.length > 0 ? images : [displayImage],
         features: features.length > 0 ? features : brandingOptions,
-        displayName
+        displayName,
+        overview,
+        brandingCapabilities
       });
       return;
     }
