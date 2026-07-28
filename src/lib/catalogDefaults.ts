@@ -810,10 +810,14 @@ export function resolveProductOverview(product?: { overview?: string; category?:
 
 /**
  * Dynamically resolves branding capabilities at runtime.
- * Priority: Admin Custom Value -> Category/Subcategory Default -> Generic Fallback
+ * Priority: showBrandingCapabilities == false -> [] -> Admin Custom Value -> Category/Subcategory Default -> Generic Fallback
  */
-export function resolveProductBranding(product?: { brandingCapabilities?: string[]; category?: string; subcategory?: string; features?: string[] } | null): string[] {
+export function resolveProductBranding(product?: { brandingCapabilities?: string[]; showBrandingCapabilities?: boolean; category?: string; subcategory?: string; features?: string[] } | null): string[] {
   if (!product) return GENERIC_DEFAULT_BRANDING;
+
+  if (product.showBrandingCapabilities === false) {
+    return [];
+  }
 
   if (Array.isArray(product.brandingCapabilities) && product.brandingCapabilities.length > 0) {
     const valid = product.brandingCapabilities.filter((b) => typeof b === "string" && b.trim().length > 0);

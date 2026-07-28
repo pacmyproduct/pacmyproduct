@@ -318,21 +318,27 @@ export function ProductPreviewModal() {
               </div>
 
               {/* Branding Capabilities (Dynamic Enterprise Chips) */}
-              <div className="space-y-2 pt-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                  Branding Capabilities
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {resolveProductBranding(product).map((cap) => (
-                    <span
-                      key={cap}
-                      className="px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2]/60 text-[11px] font-bold text-[#6B6B63] uppercase tracking-wider hover:border-[#EF5350]/50 hover:bg-white hover:shadow-xs transition-all cursor-default"
-                    >
-                      {cap}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              {(() => {
+                const brandingChips = resolveProductBranding(product);
+                if (!brandingChips || brandingChips.length === 0) return null;
+                return (
+                  <div className="space-y-2 pt-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                      Branding Capabilities
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {brandingChips.map((cap) => (
+                        <span
+                          key={cap}
+                          className="px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2]/60 text-[11px] font-bold text-[#6B6B63] uppercase tracking-wider hover:border-[#EF5350]/50 hover:bg-white hover:shadow-xs transition-all cursor-default"
+                        >
+                          {cap}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Bottom Actions Row */}

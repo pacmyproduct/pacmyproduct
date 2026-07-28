@@ -97,6 +97,10 @@ export async function POST(req: Request) {
           const brandingArr = typeof brandingVal === "string" && brandingVal.trim()
             ? brandingVal.split(/;|,/).map((s: string) => s.trim()).filter(Boolean)
             : Array.isArray(brandingVal) ? brandingVal : [];
+          const showBrandingVal = row["showBrandingCapabilities"] ?? row["Show Branding Capabilities"] ?? row.showBranding ?? row.ShowBranding;
+          const showBrandingCapabilities = showBrandingVal !== undefined && showBrandingVal !== null
+            ? String(showBrandingVal).toLowerCase() !== "false" && String(showBrandingVal).toLowerCase() !== "no"
+            : true;
 
           const canonicalCat = getCanonicalCategorySlug(category);
           const canonicalSub = getCanonicalSubcategorySlug(subcategory);
@@ -148,6 +152,7 @@ export async function POST(req: Request) {
                     ...(displayNameVal ? { "specifications.displayName": displayNameVal } : {}),
                     ...(overviewVal ? { overview: overviewVal } : {}),
                     ...(brandingArr.length > 0 ? { brandingCapabilities: brandingArr } : {}),
+                    showBrandingCapabilities,
                   },
                 }
               );
@@ -173,6 +178,7 @@ export async function POST(req: Request) {
                     ...(displayNameVal ? { "specifications.displayName": displayNameVal } : {}),
                     ...(overviewVal ? { overview: overviewVal } : {}),
                     ...(brandingArr.length > 0 ? { brandingCapabilities: brandingArr } : {}),
+                    showBrandingCapabilities,
                   },
                 }
               );
@@ -188,6 +194,7 @@ export async function POST(req: Request) {
               shortDescription: row.shortDescription || "",
               overview: overviewVal || "",
               brandingCapabilities: brandingArr,
+              showBrandingCapabilities,
               category: canonicalCat,
               subcategory: canonicalSub,
               brand: row.brand || "PacMyProduct",

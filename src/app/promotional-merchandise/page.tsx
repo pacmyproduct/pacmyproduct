@@ -257,15 +257,6 @@ export default function PromoMerchPage() {
                             <div className="p-5">
                               <h4 className="text-base font-black text-[#2B2B2B] group-hover:text-[#D32F2F] transition-colors">{spotlight.title}</h4>
                               <p className="text-xs text-[#6B6B63] leading-relaxed font-medium mt-2 line-clamp-2">{spotlight.description}</p>
-                              {spotlight.brandingOptions && (
-                                <div className="flex flex-wrap gap-1.5 mt-4">
-                                  {spotlight.brandingOptions.map((option) => (
-                                    <span key={option} className="text-[9px] font-extrabold uppercase tracking-wider text-[#6B6B63] bg-[#FAF9F6] border border-[#F5C2C2] rounded-md px-2 py-1">
-                                      {option}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
                               <div className="mt-5 pt-4 border-t border-[#F5C2C2] flex items-center justify-between text-xs font-bold text-[#D32F2F]">
                                 <span>{spotlight.cta}</span>
                                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

@@ -441,9 +441,10 @@ const mapMongoProduct = (product: any): ProductRecord => {
 
   const rawOverview = typeof product.overview === "string" ? product.overview : "";
   const rawBrandingCapabilities = Array.isArray(product.brandingCapabilities) ? product.brandingCapabilities : [];
+  const showBrandingCapabilities = product.showBrandingCapabilities !== false;
 
   const overview = resolveProductOverview({ overview: rawOverview, category, subcategory });
-  const brandingCapabilities = resolveProductBranding({ brandingCapabilities: rawBrandingCapabilities, category, subcategory });
+  const brandingCapabilities = resolveProductBranding({ brandingCapabilities: rawBrandingCapabilities, showBrandingCapabilities, category, subcategory });
 
   return {
     id: String(product._id),
@@ -453,6 +454,7 @@ const mapMongoProduct = (product: any): ProductRecord => {
     shortDescription: product.shortDescription,
     overview,
     brandingCapabilities,
+    showBrandingCapabilities,
     rawOverview,
     rawBrandingCapabilities,
     category,
@@ -578,6 +580,7 @@ export async function createProduct(input: Omit<ProductRecord, "id" | "createdAt
       shortDescription: input.shortDescription,
       overview: input.overview || "",
       brandingCapabilities: Array.isArray(input.brandingCapabilities) ? input.brandingCapabilities : [],
+      showBrandingCapabilities: input.showBrandingCapabilities !== false,
       category: canonicalCat,
       subcategory: canonicalSub,
       brand: input.brand,

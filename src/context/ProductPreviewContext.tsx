@@ -15,6 +15,7 @@ export interface PreviewProduct {
   features?: string[];
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
   name?: string;
   displayName?: string;
   budget?: string;

@@ -82,6 +82,7 @@ export async function GET(req: Request) {
         row["Short Description"] = rec.shortDescription || "";
         row["Overview"] = rec.overview || "";
         row["Branding Capabilities"] = Array.isArray(rec.brandingCapabilities) ? rec.brandingCapabilities.join("; ") : "";
+        row["Show Branding Capabilities"] = rec.showBrandingCapabilities !== false ? "Yes" : "No";
         row["Category"] = rec.category || "";
         row["Subcategory"] = rec.subcategory || "";
         row["Brand"] = rec.brand || "";

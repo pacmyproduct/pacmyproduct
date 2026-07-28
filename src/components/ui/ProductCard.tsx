@@ -36,6 +36,7 @@ interface ProductCardProps {
   displayName?: string;
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
 }
 
 export function ProductCard({ 
@@ -57,7 +58,8 @@ export function ProductCard({
   features = [],
   displayName,
   overview,
-  brandingCapabilities
+  brandingCapabilities,
+  showBrandingCapabilities
 }: ProductCardProps) {
   const { addToShortlist, removeFromShortlist, isInShortlist } = useShortlist();
   const { openPreview } = useProductPreview();
@@ -97,7 +99,8 @@ export function ProductCard({
         features: features.length > 0 ? features : brandingOptions,
         displayName,
         overview,
-        brandingCapabilities
+        brandingCapabilities,
+        showBrandingCapabilities
       });
       return;
     }
@@ -120,7 +123,8 @@ export function ProductCard({
         features: features.length > 0 ? features : brandingOptions,
         displayName,
         overview,
-        brandingCapabilities
+        brandingCapabilities,
+        showBrandingCapabilities
       });
       return;
     }

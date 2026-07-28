@@ -89,6 +89,7 @@ const ProductSchema = new Schema(
     shortDescription: String,
     overview: { type: String, default: "" },
     brandingCapabilities: { type: [String], default: [] },
+    showBrandingCapabilities: { type: Boolean, default: true },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", index: true },
     subCategoryId: { type: Schema.Types.ObjectId, ref: "Subcategory", index: true },
     brandId: { type: Schema.Types.ObjectId, ref: "Brand", index: true },

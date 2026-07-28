@@ -17,6 +17,7 @@ interface ProductRecord {
   shortDescription?: string;
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
   rawOverview?: string;
   rawBrandingCapabilities?: string[];
   category: string;
@@ -50,6 +51,7 @@ const emptyProduct = {
   shortDescription: "",
   overview: "",
   brandingCapabilities: [] as string[],
+  showBrandingCapabilities: true,
   category: "",
   subcategory: "",
   brand: "",
@@ -254,6 +256,7 @@ export function ProductManager() {
       shortDescription: product.shortDescription || "",
       overview: product.rawOverview !== undefined ? product.rawOverview : (product.overview || ""),
       brandingCapabilities: product.rawBrandingCapabilities !== undefined ? product.rawBrandingCapabilities : (product.brandingCapabilities || []),
+      showBrandingCapabilities: product.showBrandingCapabilities !== false,
       category: product.category,
       subcategory: product.subcategory,
       brand: product.brand || "",
@@ -379,6 +382,7 @@ export function ProductManager() {
         shortDescription: form.shortDescription,
         overview: form.overview,
         brandingCapabilities: form.brandingCapabilities,
+        showBrandingCapabilities: form.showBrandingCapabilities,
         category: form.category,
         subcategory: form.subcategory,
         brand: form.brand,
@@ -1094,56 +1098,80 @@ export function ProductManager() {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-[#C62828] uppercase tracking-wider">
-                    Branding Capabilities (Custom Chips)
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newBrandingTag}
-                      onChange={(e) => setNewBrandingTag(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddBrandingTag();
-                        }
-                      }}
-                      placeholder="Type branding method (e.g. Screen Printing, Laser Engraving) & press Enter"
-                      className="flex-1 rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-xs outline-none focus:border-[#D32F2F]"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddBrandingTag}
-                      className="rounded-lg bg-[#C62828] px-3 py-2 text-xs font-bold text-white hover:bg-[#D32F2F]"
-                    >
-                      Add Chip
-                    </button>
-                  </div>
+                {/* Branding Capabilities Controls */}
+                <div className="space-y-3 border-t border-[#E9E1D5] pt-3">
+                  <div className="flex items-center justify-between">
+                    <label className="inline-flex items-center gap-2 text-xs font-bold text-[#C62828] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.showBrandingCapabilities !== false}
+                        onChange={(e) => updateForm("showBrandingCapabilities", e.target.checked)}
+                        className="rounded accent-[#D32F2F] h-4 w-4"
+                      />
+                      Show Branding Capabilities
+                    </label>
 
-                  <div className="flex flex-wrap gap-2 pt-1.5">
-                    {form.brandingCapabilities && form.brandingCapabilities.length > 0 ? (
-                      form.brandingCapabilities.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2] text-xs font-bold text-[#6B6B63]"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveBrandingTag(tag)}
-                            className="hover:text-[#D32F2F] text-gray-400 p-0.5 rounded-full"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-[#9A9387] italic">
-                        No custom chips set. Category defaults will be resolved automatically.
-                      </span>
+                    {form.showBrandingCapabilities !== false && (
+                      <button
+                        type="button"
+                        onClick={handleLoadCategoryDefaults}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-1 text-xs font-bold text-[#C62828] hover:bg-[#FAF9F6] shadow-sm transition"
+                      >
+                        Load Category Defaults
+                      </button>
                     )}
                   </div>
+
+                  {form.showBrandingCapabilities !== false ? (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newBrandingTag}
+                          onChange={(e) => setNewBrandingTag(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleAddBrandingTag();
+                            }
+                          }}
+                          placeholder="Type branding method (e.g. Screen Printing, Laser Engraving) & press Enter"
+                          className="flex-1 rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-xs outline-none focus:border-[#D32F2F]"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddBrandingTag}
+                          className="rounded-lg bg-[#C62828] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#D32F2F]"
+                        >
+                          Add Chip
+                        </button>
+                      </div>
+
+                      {form.brandingCapabilities && form.brandingCapabilities.length > 0 && (
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {form.brandingCapabilities.map((tag) => (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#F5C2C2] text-xs font-bold text-[#6B6B63]"
+                            >
+                              {tag}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveBrandingTag(tag)}
+                                className="hover:text-[#D32F2F] text-gray-400 p-0.5 rounded-full"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-xs font-bold text-[#6B6B63] bg-[#FAF9F6] p-3 rounded-lg border border-[#F5C2C2]/70 italic">
+                      Branding Capabilities are disabled for this product.
+                    </div>
+                  )}
                 </div>
               </div>
 

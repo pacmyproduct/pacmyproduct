@@ -39,6 +39,7 @@ export interface ProductRecord {
   shortDescription?: string;
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
   rawOverview?: string;
   rawBrandingCapabilities?: string[];
   category: string;

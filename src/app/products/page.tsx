@@ -30,6 +30,7 @@ interface CatalogProduct {
   displayName?: string;
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
   budget?: string;
 }
 
@@ -686,6 +687,7 @@ function ProductsPageContent() {
                           displayName={product.displayName}
                           overview={product.overview}
                           brandingCapabilities={product.brandingCapabilities}
+                          showBrandingCapabilities={product.showBrandingCapabilities}
                         />
                       </motion.div>
                     ))}

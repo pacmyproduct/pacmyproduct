@@ -142,6 +142,7 @@ interface Product {
   features?: string[];
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
 }
 
 function CorporateKitsContent() {
@@ -546,6 +547,7 @@ function CorporateKitsContent() {
                     features={(item as any).features || []}
                     overview={(item as any).overview}
                     brandingCapabilities={(item as any).brandingCapabilities}
+                    showBrandingCapabilities={(item as any).showBrandingCapabilities}
                     className="glass-card hover:shadow-xl hover:shadow-gray-200/40 border-gray-200/60"
                   />
                 ))

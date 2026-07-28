@@ -32,6 +32,7 @@ interface CatalogProduct {
   displayName?: string;
   overview?: string;
   brandingCapabilities?: string[];
+  showBrandingCapabilities?: boolean;
   budget?: string;
   price?: number | string;
 }
@@ -543,6 +544,7 @@ function BudgetCollectionContent() {
                               displayName={p.displayName}
                               overview={p.overview}
                               brandingCapabilities={p.brandingCapabilities}
+                              showBrandingCapabilities={p.showBrandingCapabilities}
                               className="glass-card hover:shadow-xl hover:shadow-gray-200/40 border-gray-200/60"
                             />
                           );
