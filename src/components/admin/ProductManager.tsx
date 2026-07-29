@@ -597,7 +597,7 @@ export function ProductManager() {
           
           {/* Search Box */}
           <div className="md:col-span-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B6B63] mb-2">Search Catalog</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B6B63] mb-2">Search Catalogue</label>
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-[#9A9387]" />
               <input
@@ -749,7 +749,7 @@ export function ProductManager() {
                   </thead>
                   <tbody className="divide-y divide-[#F5C2C2]">
                     {loading ? (
-                      <tr><td className="px-4 py-8 text-center text-[#6B6B63]" colSpan={9}><Loader2 className="h-5 w-5 animate-spin mx-auto text-[#D32F2F] mb-2" />Loading product catalog database...</td></tr>
+                      <tr><td className="px-4 py-8 text-center text-[#6B6B63]" colSpan={9}><Loader2 className="h-5 w-5 animate-spin mx-auto text-[#D32F2F] mb-2" />Loading product catalogue database...</td></tr>
                     ) : paginatedProducts.length === 0 ? (
                       <tr><td className="px-4 py-8 text-center text-[#9A9387] font-bold" colSpan={9}>No matching products yet. Create or import spreadsheet rows above.</td></tr>
                     ) : (
@@ -835,7 +835,7 @@ export function ProductManager() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B2B2B]/45 p-4">
           <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl border border-[#F5C2C2] bg-[#FFFDF8] p-6 text-[#2B2B2B] shadow-2xl space-y-6">
             <div className="flex justify-between items-center border-b border-[#E9E1D5] pb-3">
-              <h2 className="text-lg font-black uppercase tracking-wider text-[#2B2B2B]">Spreadsheet Catalog Manager</h2>
+              <h2 className="text-lg font-black uppercase tracking-wider text-[#2B2B2B]">Spreadsheet Catalogue Manager</h2>
               <button onClick={() => { setImportExportModalOpen(false); setImportFile(null); setImportPreview([]); setImportSummary(null); }} className="rounded-lg p-1.5 border border-[#F5C2C2] hover:bg-[#F8F7F3]"><X className="h-5 w-5" /></button>
             </div>
 
@@ -844,7 +844,7 @@ export function ProductManager() {
               {/* Export Panel */}
               <div className="space-y-4 rounded-xl border border-[#F5C2C2] p-5 bg-[#FAF9F6]/70">
                 <h3 className="text-sm font-black uppercase tracking-widest text-[#3F4734] flex items-center gap-2">
-                  <Download className="h-4.5 w-4.5 text-[#D32F2F]" /> Export Catalog Data
+                  <Download className="h-4.5 w-4.5 text-[#D32F2F]" /> Export Catalogue Data
                 </h3>
                 <p className="text-xs text-[#6B6B63]">Download active products in CSV or Excel file spreadsheet format.</p>
 
@@ -885,7 +885,7 @@ export function ProductManager() {
                 </div>
 
                 <button onClick={submitExport} className="w-full mt-4 bg-[#C62828] text-white rounded-lg px-4 py-2.5 text-xs font-black uppercase hover:bg-[#C62828]/85 transition">
-                  Export Catalog
+                  Export Catalogue
                 </button>
               </div>
 
@@ -894,7 +894,7 @@ export function ProductManager() {
                 <h3 className="text-sm font-black uppercase tracking-widest text-[#D32F2F] flex items-center gap-2">
                   <Upload className="h-4.5 w-4.5 text-[#D32F2F]" /> Bulk Import Spreadsheet
                 </h3>
-                <p className="text-xs text-[#6B6B63]">Upload CSV or XLSX templates to create or update catalog records in bulk.</p>
+                <p className="text-xs text-[#6B6B63]">Upload CSV or XLSX templates to create or update catalogue records in bulk.</p>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -987,13 +987,13 @@ export function ProductManager() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B2B2B]/45 p-4">
           <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-xl border border-[#F5C2C2] bg-[#FFFDF8] p-6 text-[#2B2B2B] shadow-2xl">
             <div className="mb-4 flex items-center justify-between border-b border-[#E9E1D5] pb-3">
-              <h2 className="text-xl font-black">{editingId ? "Edit Product Record" : "Add Product to Catalog"}</h2>
+              <h2 className="text-xl font-black">{editingId ? "Edit Product Record" : "Add Product to Catalogue"}</h2>
               <button onClick={handleCancelOrClose} className="rounded-md p-1.5 hover:bg-[#F8F7F3]"><X className="h-5 w-5" /></button>
             </div>
             
             <form onSubmit={saveProduct} className="grid gap-4 md:grid-cols-2 text-left">
               
-              {/* Product title and slug are auto-generated internally in B2B catalog mode */}
+              {/* Product title and slug are auto-generated internally in B2B catalogue mode */}
 
               <label className="block text-sm font-bold text-[#C62828]">
                 Category
@@ -1272,7 +1272,7 @@ export function ProductManager() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B2B2B]/45 p-4">
           <div className="w-full max-w-md rounded-xl border border-[#F5C2C2] bg-[#FFFDF8] p-6 text-[#2B2B2B] shadow-2xl text-left">
-            <h2 className="text-lg font-black text-[#2B2B2B]">Archive catalog item?</h2>
+            <h2 className="text-lg font-black text-[#2B2B2B]">Archive catalogue item?</h2>
             <p className="mt-2 text-sm text-[#6B6B63]">
               Are you sure you want to delete <strong>{cleanProductTitle(deleteTarget.title)}</strong>? It will be moved to the Trash Bin and hidden from the store.
             </p>

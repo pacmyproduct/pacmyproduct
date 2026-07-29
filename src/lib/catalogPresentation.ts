@@ -147,7 +147,7 @@ export function getCategoryPresentation(slugOrName: string): CategoryPresentatio
       displayName: "Corporate Gift",
       marketingDescription: "End-to-end corporate gifting solutions tailored for business teams and corporate clients.",
       fallbackImage: "/images/joiningkit.png",
-      ctaText: "VIEW CATALOG"
+      ctaText: "VIEW CATALOGUE"
     };
   }
 
@@ -177,6 +177,6 @@ export function getCategoryPresentation(slugOrName: string): CategoryPresentatio
     displayName: slugOrName,
     marketingDescription: `Premium ${slugOrName} customized for corporate branding and employee appreciation.`,
     fallbackImage: "/images/joiningkit.png",
-    ctaText: "VIEW CATALOG"
+    ctaText: "VIEW CATALOGUE"
   };
 }

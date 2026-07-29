@@ -247,7 +247,7 @@ export function HeroSection() {
               href="/promotional-merchandise"
               className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-white/10 text-white border border-white/20 text-xs font-black uppercase tracking-wider backdrop-blur-md hover:bg-white/20 transition-all"
             >
-              Browse Catalog
+              Browse Catalogue
             </Link>
           </div>
         </div>

@@ -163,7 +163,7 @@ export default function PromoMerchPage() {
                 </p>
               </div>
               <Link href="/products" className="text-xs font-extrabold text-[#D32F2F] uppercase tracking-widest inline-flex items-center gap-1.5 hover:text-[#C62828]">
-                View Product Catalog <ArrowRight className="w-3.5 h-3.5" />
+                View Product Catalogue <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 

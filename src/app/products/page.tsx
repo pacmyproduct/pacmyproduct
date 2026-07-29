@@ -486,13 +486,13 @@ function ProductsPageContent() {
             <Home className="w-3.5 h-3.5" /> Home
           </Link>
           <ChevronRight className="w-3 h-3 text-gray-300" />
-          <span className="text-gray-900">Products Catalog</span>
+          <span className="text-gray-900">Products Catalogue</span>
         </nav>
 
         {/* Page Header */}
         <div className="mb-12 text-left">
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-            Promotional Products <span className="text-[#D32F2F]">Catalog</span>
+            Promotional Products <span className="text-[#D32F2F]">Catalogue</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#6B6B63] mt-2 max-w-xl leading-relaxed font-semibold">
             High-quality corporate giveaways, employee welcome swag, and luxury promotional items customizable with your company logo.
@@ -522,7 +522,7 @@ function ProductsPageContent() {
 
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             <div className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">
-              {isLoading ? "Loading catalog" : `Showing ${filteredProducts.length} results`}
+              {isLoading ? "Loading catalogue" : `Showing ${filteredProducts.length} results`}
             </div>
 
             <button
@@ -634,9 +634,9 @@ function ProductsPageContent() {
                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-300">
                   <Search className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800">Loading catalog from database</h3>
+                <h3 className="text-lg font-bold text-gray-800">Loading catalogue from database</h3>
                 <p className="text-xs sm:text-sm text-gray-400 max-w-sm mx-auto leading-relaxed font-semibold">
-                  Fetching products, categories, images, and subcategories from the catalog API.
+                  Fetching products, categories, images, and subcategories from the catalogue API.
                 </p>
               </div>
             ) : filteredProducts.length === 0 ? (
@@ -754,7 +754,7 @@ function ProductsPageContent() {
               className="lg:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 flex flex-col p-6 text-left"
             >
               <div className="flex items-center justify-between pb-4 border-b border-gray-150 mb-6">
-                <h3 className="font-extrabold text-gray-900 text-base">Catalog Filters</h3>
+                <h3 className="font-extrabold text-gray-900 text-base">Catalogue Filters</h3>
                 <button 
                   onClick={() => setShowMobileFilters(false)}
                   className="p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors"
@@ -840,7 +840,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="pt-32 pb-24 text-center text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">
-        Loading product catalog...
+        Loading product catalogue...
       </div>
     }>
       <ProductsPageContent />

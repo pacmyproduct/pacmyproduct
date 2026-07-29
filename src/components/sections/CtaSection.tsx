@@ -40,7 +40,7 @@ export function CtaSection() {
             </motion.h2>
             
             <motion.p variants={prefersReduced ? undefined : staggerItem} className="text-sm sm:text-base md:text-lg text-gray-300 max-w-xl mx-auto leading-relaxed font-medium">
-              Contact our corporate gifting style consultants. Get free catalog samples, structural diework designs, and custom branding proposals.
+              Contact our corporate gifting style consultants. Get free catalogue samples, structural diework designs, and custom branding proposals.
             </motion.p>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">

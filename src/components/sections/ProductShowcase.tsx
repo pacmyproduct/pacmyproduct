@@ -87,7 +87,7 @@ export function ProductShowcase() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
           <div className="text-left">
             <h2 className="text-4xl font-bold text-[#2B2B2B] mb-4">Curated Gifts</h2>
-            <p className="text-lg text-[#6B6B63]">Explore our premium catalog of best-selling corporate kits.</p>
+            <p className="text-lg text-[#6B6B63]">Explore our premium catalogue of best-selling corporate kits.</p>
           </div>
 
           <div className="flex flex-wrap gap-2">

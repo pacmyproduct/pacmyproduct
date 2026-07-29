@@ -414,7 +414,7 @@ function BudgetCollectionContent() {
 
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             <div className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">
-              {isLoading ? "Searching items..." : `Showing ${gridItems.length} catalog items`}
+              {isLoading ? "Searching items..." : `Showing ${gridItems.length} catalogue items`}
             </div>
 
             <button
@@ -475,7 +475,7 @@ function BudgetCollectionContent() {
                   href="/products"
                   className="w-full text-left px-3 py-2 rounded-lg text-xs font-bold text-[#6B6B63] hover:bg-[#FAF9F6] hover:text-[#2B2B2B] transition-all block"
                 >
-                  All Budgets (General Catalog)
+                  All Budgets (General Catalogue)
                 </Link>
                 {budgets.filter((b) => b.active).map((b) => {
                   const isActive = b.id === budgetId;
@@ -661,7 +661,7 @@ function BudgetCollectionContent() {
 
 export default function BudgetCollectionPage() {
   return (
-    <Suspense fallback={<div className="pt-32 text-center font-bold text-gray-400">Loading catalog page...</div>}>
+    <Suspense fallback={<div className="pt-32 text-center font-bold text-gray-400">Loading catalogue page...</div>}>
       <BudgetCollectionContent />
     </Suspense>
   );

@@ -168,7 +168,7 @@ function GiftsByBudgetContent() {
           </span>
           <SectionHeading 
             title={<>Corporate Gifts <span className="text-[#D32F2F]">by Budget</span></>}
-            subtitle="Explore our curated catalog segments structured dynamically to match your cost constraints without compromising on visual elegance." 
+            subtitle="Explore our curated catalogue segments structured dynamically to match your cost constraints without compromising on visual elegance." 
             centered 
           />
         </div>
@@ -247,7 +247,7 @@ function GiftsByBudgetContent() {
 
 export default function GiftsByBudgetPage() {
   return (
-    <Suspense fallback={<div className="pt-32 text-center font-bold text-gray-400">Loading budget catalog...</div>}>
+    <Suspense fallback={<div className="pt-32 text-center font-bold text-gray-400">Loading budget catalogue...</div>}>
       <GiftsByBudgetContent />
     </Suspense>
   );

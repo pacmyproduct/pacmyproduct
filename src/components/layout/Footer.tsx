@@ -102,7 +102,7 @@ export function Footer() {
 
           <div className="lg:col-span-7 flex flex-col justify-center space-y-4">
             <h4 className="text-white text-sm font-extrabold uppercase tracking-wider">
-              Subscribe to Gifting Insights &amp; Catalogs
+              Subscribe to Gifting Insights &amp; Catalogues
             </h4>
             <p className="text-xs text-[rgba(255,255,255,0.88)] max-w-lg">
               Receive quarterly showcases of new gifting collections, packaging design trends, and priority sample dispatch programs.
@@ -112,7 +112,7 @@ export function Footer() {
               {subscribed ? (
                 <div className="flex items-center gap-2 text-[#EF5350] text-sm font-bold bg-[#FDECEC]/10 border border-[#F5C2C2]/30 p-3.5 rounded-xl">
                   <Check className="w-4 h-4 text-[#EF5350]" />
-                  Successfully subscribed to catalog updates!
+                  Successfully subscribed to catalogue updates!
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-2.5">

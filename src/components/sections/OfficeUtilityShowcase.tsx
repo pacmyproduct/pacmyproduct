@@ -160,7 +160,7 @@ export function OfficeUtilityShowcase() {
             </p>
           </div>
           <Button variant="outline" className="hidden md:inline-flex rounded-xl font-bold" asChild>
-            <Link href="/products?category=workspace-essentials">Explore Workspace Catalog</Link>
+            <Link href="/products?category=workspace-essentials">Explore Workspace Catalogue</Link>
           </Button>
         </div>
 
@@ -283,7 +283,7 @@ export function OfficeUtilityShowcase() {
         {/* Mobile View All button */}
         <div className="mt-8 md:hidden text-center">
           <Button variant="outline" className="w-full rounded-xl font-bold py-4" asChild>
-            <Link href="/products?category=workspace-essentials">View Workspace Catalog</Link>
+            <Link href="/products?category=workspace-essentials">View Workspace Catalogue</Link>
           </Button>
         </div>
 
