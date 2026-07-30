@@ -109,6 +109,13 @@ export function ProductManager() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isDisplayNameEdited, setIsDisplayNameEdited] = useState(false);
 
+  // Bulk Subcategory Overview states
+  const [applyOverviewToSubcategory, setApplyOverviewToSubcategory] = useState(false);
+  const [bulkConfirmModalOpen, setBulkConfirmModalOpen] = useState(false);
+  const [affectedProductCount, setAffectedProductCount] = useState<number | null>(null);
+  const [loadingAffectedCount, setLoadingAffectedCount] = useState(false);
+
+
   // Reusable Media Uploader states
   const [featuredUploading, setFeaturedUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
@@ -236,6 +243,8 @@ export function ProductManager() {
     setUploadedPublicIdsInSession([]);
     setUploadError("");
     setUploadSuccess("");
+    setApplyOverviewToSubcategory(false);
+    setBulkConfirmModalOpen(false);
     setModalOpen(true);
   };
 
@@ -278,6 +287,8 @@ export function ProductManager() {
     setUploadedPublicIdsInSession([]);
     setUploadError("");
     setUploadSuccess("");
+    setApplyOverviewToSubcategory(false);
+    setBulkConfirmModalOpen(false);
     setModalOpen(true);
   };
 
@@ -352,9 +363,37 @@ export function ProductManager() {
     setModalOpen(false);
   };
 
-  const saveProduct = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const saveProduct = async (event?: React.FormEvent<HTMLFormElement>, forceBulkConfirmed: boolean = false) => {
+    if (event) event.preventDefault();
     if (isUploading) return;
+
+    if (applyOverviewToSubcategory && !forceBulkConfirmed) {
+      setLoadingAffectedCount(true);
+      setBulkConfirmModalOpen(true);
+      try {
+        const sub = form.subcategory || form.category;
+        if (sub) {
+          const countRes = await fetch(`/api/admin/products?action=count&subcategory=${encodeURIComponent(sub)}`);
+          const countData = await countRes.json();
+          if (countData.success && typeof countData.count === "number") {
+            setAffectedProductCount(countData.count);
+          } else {
+            const localCount = products.filter((p) => p.subcategory === sub || p.category === sub).length;
+            setAffectedProductCount(localCount);
+          }
+        } else {
+          setAffectedProductCount(0);
+        }
+      } catch {
+        const sub = form.subcategory || form.category;
+        const localCount = products.filter((p) => p.subcategory === sub || p.category === sub).length;
+        setAffectedProductCount(localCount);
+      } finally {
+        setLoadingAffectedCount(false);
+      }
+      return;
+    }
+
     setSaving(true);
     setUploadError("");
     setUploadSuccess("");
@@ -398,6 +437,8 @@ export function ProductManager() {
         budget: form.budget || "",
         // @ts-ignore
         displayName: form.displayName || "",
+        applyToSubcategory: applyOverviewToSubcategory,
+        applyOverviewToSubcategory: applyOverviewToSubcategory,
       };
 
       const res = await fetch(editingId ? `/api/admin/products/${editingId}` : "/api/admin/products", {
@@ -413,6 +454,7 @@ export function ProductManager() {
 
       setUploadedPublicIdsInSession([]); // Clear session tracker so files aren't deleted
       setSaving(false);
+      setBulkConfirmModalOpen(false);
       setModalOpen(false);
       await load();
     } catch (err: any) {
@@ -420,6 +462,7 @@ export function ProductManager() {
       setSaving(false);
     }
   };
+
 
   const deleteProduct = async () => {
     if (!deleteTarget) return;
@@ -1073,7 +1116,7 @@ export function ProductManager() {
                       Dynamic Product Overview & Branding Capabilities
                     </h3>
                     <p className="text-[11px] text-[#6B6B63]">
-                      If left empty, system automatically resolves category defaults at runtime.
+                      Leave empty to automatically inherit the Subcategory or Category overview.
                     </p>
                   </div>
                   <button
@@ -1093,10 +1136,29 @@ export function ProductManager() {
                     value={form.overview}
                     onChange={(e) => updateForm("overview", e.target.value)}
                     rows={4}
-                    placeholder="Enter custom Overview (or leave blank to inherit category defaults). Supports paragraphs, bullet points (• or -), and line breaks."
+                    placeholder="Leave empty to inherit the Subcategory or Category overview automatically. Supports custom paragraphs, bullet points (• or -), and line breaks."
                     className="w-full rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-sm outline-none focus:border-[#D32F2F] leading-relaxed font-sans"
                   />
+                  <p className="text-[10px] text-[#6B6B63] italic">
+                    Leave empty to automatically inherit the Subcategory or Category overview.
+                  </p>
+
+                  <div className="pt-2">
+                    <label className="inline-flex items-center gap-2 text-xs font-bold text-[#C62828] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={applyOverviewToSubcategory}
+                        onChange={(e) => setApplyOverviewToSubcategory(e.target.checked)}
+                        className="rounded accent-[#D32F2F] h-4 w-4"
+                      />
+                      Apply this overview to all products in this subcategory
+                    </label>
+                    <p className="text-[11px] text-[#6B6B63] pl-6 font-medium mt-0.5">
+                      Updates the Product Overview of every product in this subcategory.
+                    </p>
+                  </div>
                 </div>
+
 
                 {/* Branding Capabilities Controls */}
                 <div className="space-y-3 border-t border-[#E9E1D5] pt-3">
@@ -1283,6 +1345,76 @@ export function ProductManager() {
           </div>
         </div>
       )}
+
+      {/* Bulk Overview Confirmation Modal */}
+      {bulkConfirmModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B2B2B]/45 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-xl border border-[#F5C2C2] bg-[#FFFDF8] p-6 text-[#2B2B2B] shadow-2xl text-left space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E9E1D5] pb-3">
+              <h2 className="text-lg font-black text-[#2B2B2B]">Apply Overview to All Products?</h2>
+              <button
+                type="button"
+                onClick={() => setBulkConfirmModalOpen(false)}
+                className="rounded-lg p-1 hover:bg-[#FAF9F6] text-[#6B6B63]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-sm text-[#6B6B63] leading-relaxed">
+              <p>
+                This will update the Product Overview for every product in:
+              </p>
+              <div className="font-extrabold text-[#D32F2F] bg-[#FDECEC] px-3.5 py-2 rounded-lg border border-[#F5C2C2] text-sm">
+                {subcategories.find((s) => s.slug === form.subcategory)?.name || getCanonicalSubcategoryName(form.subcategory) || (form.subcategory ? form.subcategory.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Subcategory")}
+              </div>
+
+              <div className="flex items-center justify-between bg-[#FAF9F6] p-3 rounded-lg border border-[#E9E1D5]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6B6B63]">
+                  Affected Products:
+                </span>
+                <span className="text-base font-black text-[#C62828]">
+                  {loadingAffectedCount ? (
+                    <Loader2 className="h-4 w-4 animate-spin inline" />
+                  ) : (
+                    affectedProductCount ?? 0
+                  )}
+                </span>
+              </div>
+
+              <p className="text-xs text-[#8A4B22] font-semibold bg-[#F3E7D7] p-2.5 rounded-lg border border-[#EAD7C8]">
+                This action only affects this subcategory.
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2 border-t border-[#E9E1D5]">
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => setBulkConfirmModalOpen(false)}
+                className="rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-4 py-2 text-sm font-bold text-[#C62828] hover:bg-[#FAF9F6] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => saveProduct(undefined, true)}
+                className="rounded-lg bg-[#D32F2F] px-5 py-2 text-sm font-black text-white hover:bg-[#C62828] shadow-md disabled:opacity-50 flex items-center gap-1.5 uppercase tracking-wide"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Updating All...
+                  </>
+                ) : (
+                  "Apply to All"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   );

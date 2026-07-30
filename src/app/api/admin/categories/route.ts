@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       name: data.name,
       slug: data.slug,
       description: data.description,
+      overview: data.overview,
       parentGroup: data.parentGroup,
       image: data.image,
       cloudinaryPublicId: data.cloudinaryPublicId,

@@ -14,6 +14,7 @@ export interface PreviewProduct {
   images?: string[];
   features?: string[];
   overview?: string;
+  rawOverview?: string;
   brandingCapabilities?: string[];
   showBrandingCapabilities?: boolean;
   name?: string;

@@ -1,10 +1,11 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ImagePlus, Pencil, Plus, Trash2, UploadCloud, X, GripVertical, Loader2 } from "lucide-react";
+import { ImagePlus, Pencil, Plus, Trash2, UploadCloud, X, GripVertical, Loader2, Info } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { ImageUploader } from "./ImageUploader";
+import { invalidateLiveTaxonomyCache } from "@/lib/liveOverviewResolver";
 
 type Mode = "categories" | "subcategories" | "brands";
 
@@ -59,6 +60,7 @@ interface TaxonomyForm {
   name: string;
   slug: string;
   description: string;
+  overview: string;
   category: string;
   parentGroup: string;
   image: string;
@@ -86,6 +88,7 @@ const emptyCategory: TaxonomyForm = {
   name: "",
   slug: "",
   description: "",
+  overview: "",
   category: "",
   parentGroup: "",
   image: "",
@@ -99,6 +102,7 @@ const emptySubcategory: TaxonomyForm = {
   name: "",
   slug: "",
   description: "",
+  overview: "",
   category: "",
   parentGroup: "",
   image: "",
@@ -112,6 +116,7 @@ const emptyBrand: TaxonomyForm = {
   name: "",
   slug: "",
   description: "",
+  overview: "",
   category: "",
   parentGroup: "",
   image: "",
@@ -190,7 +195,8 @@ export function TaxonomyManager({ mode }: { mode: Mode }) {
     setForm({
       name: record.name,
       slug: record.slug,
-      description: "description" in record ? record.description || "" : "",
+      description: typeof (record as any).description === "string" ? (record as any).description : "",
+      overview: typeof (record as any).overview === "string" ? (record as any).overview : "",
       category: "category" in record ? record.category || "" : "",
       parentGroup: "industry" in record ? record.industry || "" : "parentGroup" in record ? record.parentGroup || "" : "",
       image: "image" in record ? record.image || "" : "",
@@ -243,6 +249,7 @@ export function TaxonomyManager({ mode }: { mode: Mode }) {
         name: form.name,
         slug: form.slug,
         description: form.description,
+        overview: form.overview,
         category: isSubcategory ? form.category : undefined,
         parentGroup: form.parentGroup,
         image: isBrand ? undefined : imageUrl,
@@ -264,6 +271,7 @@ export function TaxonomyManager({ mode }: { mode: Mode }) {
         throw new Error(result.message || "Failed to save record");
       }
 
+      invalidateLiveTaxonomyCache();
       setUploadedPublicIdsInSession([]); // Clear session tracker so files aren't deleted
       setSaving(false);
       setModalOpen(false);
@@ -277,6 +285,7 @@ export function TaxonomyManager({ mode }: { mode: Mode }) {
   const deleteRecord = async () => {
     if (!deleteTarget) return;
     await fetch(`/api/admin/${mode}/${deleteTarget.id}`, { method: "DELETE" });
+    invalidateLiveTaxonomyCache();
     setDeleteTarget(null);
     await load();
   };
@@ -429,6 +438,52 @@ export function TaxonomyManager({ mode }: { mode: Mode }) {
               <div className="md:col-span-2">
                 <TextArea label="Description" value={form.description} onChange={(value) => updateForm("description", value)} />
               </div>
+
+              {!isBrand && !isSubcategory && (
+                <div className="md:col-span-2 border-t border-[#E9E1D5] pt-4 space-y-2 text-left">
+                  <div className="bg-[#FAF9F6] border border-[#F5C2C2] rounded-xl p-3.5 space-y-1">
+                    <div className="flex items-center gap-2 text-[#D32F2F] text-xs font-black uppercase tracking-wider">
+                      <Info className="w-4 h-4" /> Category Product Overview Inheritance
+                    </div>
+                    <p className="text-[11px] text-[#6B6B63] leading-relaxed font-semibold">
+                      Updating this overview sets the single source of truth for all products in this category. 
+                      Hierarchy: <strong>Product Override → Subcategory Override → Category Overview → System Default</strong>.
+                    </p>
+                  </div>
+
+                  <label className="block text-xs font-bold text-[#C62828] uppercase tracking-wider">
+                    Default Product Overview
+                  </label>
+                  <textarea
+                    value={form.overview}
+                    onChange={(e) => updateForm("overview", e.target.value)}
+                    rows={5}
+                    placeholder="Enter default overview for all products in this category (supports paragraphs, bullet lists with • or -, numbered lists, line breaks)..."
+                    className="w-full rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-sm outline-none focus:border-[#D32F2F] leading-relaxed font-sans"
+                  />
+                  <p className="text-[10px] text-[#6B6B63] italic">
+                    This overview will automatically be used by all products in this category unless overridden at the subcategory or product level.
+                  </p>
+                </div>
+              )}
+
+              {isSubcategory && (
+                <div className="md:col-span-2 border-t border-[#E9E1D5] pt-4 space-y-2 text-left">
+                  <label className="block text-xs font-bold text-[#C62828] uppercase tracking-wider">
+                    Override Category Overview (Optional)
+                  </label>
+                  <textarea
+                    value={form.overview}
+                    onChange={(e) => updateForm("overview", e.target.value)}
+                    rows={4}
+                    placeholder="Leave empty to inherit the Category Overview automatically..."
+                    className="w-full rounded-lg border border-[#F5C2C2] bg-[#FFFDF8] px-3 py-2 text-sm outline-none focus:border-[#D32F2F] leading-relaxed font-sans"
+                  />
+                  <p className="text-[10px] text-[#6B6B63] italic">
+                    Leave empty to inherit the Category Overview automatically. If provided, this overview will apply to all products under this subcategory.
+                  </p>
+                </div>
+              )}
 
               <label className="flex items-center gap-2 pt-6 text-sm font-bold text-[#C62828] cursor-pointer">
                 <input type="checkbox" checked={form.active} onChange={(event) => updateForm("active", event.target.checked)} />

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminRequest } from "@/lib/admin/apiAuth";
-import { createProduct, listAllProducts, searchProducts } from "@/services/admin/productService";
+import { createProduct, getSubcategoryProductCount, listAllProducts, searchProducts } from "@/services/admin/productService";
 import { logActivity } from "@/lib/admin/activityLogger";
 import { revalidatePathsAndTags } from "@/lib/admin/cacheRevalidation";
 
@@ -9,6 +9,13 @@ export async function GET(req: Request) {
   if (auth.response) return auth.response;
 
   const { searchParams } = new URL(req.url);
+
+  if (searchParams.get("action") === "count" && searchParams.get("subcategory")) {
+    const subcategory = searchParams.get("subcategory")!;
+    const count = await getSubcategoryProductCount(subcategory);
+    return NextResponse.json({ success: true, subcategory, count });
+  }
+
   const hasAdvancedParams = [
     "search",
     "category",
@@ -52,6 +59,9 @@ export async function POST(req: Request) {
       slug: data.slug,
       description: data.description ?? "",
       shortDescription: data.shortDescription,
+      overview: data.overview,
+      brandingCapabilities: data.brandingCapabilities,
+      showBrandingCapabilities: data.showBrandingCapabilities,
       category: data.category,
       subcategory: data.subcategory ?? data.category,
       brand: data.brand,
@@ -71,7 +81,12 @@ export async function POST(req: Request) {
       budget: data.budget,
       // @ts-ignore
       displayName: data.displayName,
+      // @ts-ignore
+      applyToSubcategory: data.applyToSubcategory ?? data.applyOverviewToSubcategory,
+      // @ts-ignore
+      applyOverviewToSubcategory: data.applyOverviewToSubcategory ?? data.applyToSubcategory,
     });
+
 
     if (product) {
       await logActivity({

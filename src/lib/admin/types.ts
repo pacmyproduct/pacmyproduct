@@ -58,6 +58,7 @@ export interface ProductRecord {
   featured: boolean;
   active: boolean;
   status?: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  isDeleted?: boolean;
   order?: number;
   budget?: string;
   displayName?: string;
@@ -70,6 +71,7 @@ export interface CategoryRecord {
   name: string;
   slug: string;
   description?: string;
+  overview?: string;
   parentGroup?: string;
   image?: string;
   cloudinaryPublicId?: string;
@@ -86,6 +88,7 @@ export interface SubcategoryRecord {
   category: string;
   parentGroup: string;
   description?: string;
+  overview?: string;
   image: string;
   featuredImage?: string;
   cloudinaryPublicId?: string;

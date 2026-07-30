@@ -442,8 +442,6 @@ const mapMongoProduct = (product: any): ProductRecord => {
   const rawOverview = typeof product.overview === "string" ? product.overview : "";
   const rawBrandingCapabilities = Array.isArray(product.brandingCapabilities) ? product.brandingCapabilities : [];
   const showBrandingCapabilities = product.showBrandingCapabilities !== false;
-
-  const overview = resolveProductOverview({ overview: rawOverview, category, subcategory });
   const brandingCapabilities = resolveProductBranding({ brandingCapabilities: rawBrandingCapabilities, showBrandingCapabilities, category, subcategory });
 
   return {
@@ -452,7 +450,7 @@ const mapMongoProduct = (product: any): ProductRecord => {
     slug: product.slug,
     description: product.description || "",
     shortDescription: product.shortDescription,
-    overview,
+    overview: rawOverview,
     brandingCapabilities,
     showBrandingCapabilities,
     rawOverview,
@@ -599,17 +597,30 @@ export async function createProduct(input: Omit<ProductRecord, "id" | "createdAt
       active: input.active,
       order: input.order || 0,
     });
+
+    // @ts-ignore
+    if (input.applyToSubcategory || input.applyOverviewToSubcategory) {
+      await bulkUpdateProductsBySubcategory(canonicalSub, { overview: input.overview || "" }, String(product._id));
+    }
+
     return mapMongoProduct(product.toObject());
   }
 
-  return createRecord("products", {
+  const created = createRecord("products", {
     ...input,
     category: canonicalCat,
     subcategory: canonicalSub,
   });
+
+  // @ts-ignore
+  if (input.applyToSubcategory || input.applyOverviewToSubcategory) {
+    await bulkUpdateProductsBySubcategory(canonicalSub, { overview: input.overview || "" }, created.id);
+  }
+
+  return created;
 }
 
-export async function updateProduct(id: string, patch: Partial<ProductRecord> & { status?: string }) {
+export async function updateProduct(id: string, patch: Partial<ProductRecord> & { status?: string; applyToSubcategory?: boolean; applyOverviewToSubcategory?: boolean }) {
   const canonicalCat = patch.category ? getCanonicalCategorySlug(patch.category) : undefined;
   const canonicalSub = patch.subcategory ? getCanonicalSubcategorySlug(patch.subcategory) : undefined;
 
@@ -700,16 +711,32 @@ export async function updateProduct(id: string, patch: Partial<ProductRecord> & 
       specifications: specs,
     };
 
+    delete update.applyToSubcategory;
+    delete update.applyOverviewToSubcategory;
+
     Object.keys(update).forEach((key) => update[key] === undefined && delete update[key]);
     const product = await ProductModel.findByIdAndUpdate(id, { $set: update }, { new: true }).lean<any>();
+
+    if (patch.applyToSubcategory || patch.applyOverviewToSubcategory) {
+      const targetOverview = patch.overview ?? existingProduct.overview ?? "";
+      await bulkUpdateProductsBySubcategory(finalSub, { overview: targetOverview }, id);
+    }
+
     return product ? mapMongoProduct(product) : null;
   }
 
-  return updateRecord("products", id, {
+  const updatedRecord = updateRecord("products", id, {
     ...patch,
     category: canonicalCat ?? patch.category,
     subcategory: canonicalSub ?? patch.subcategory,
   });
+
+  if (patch.applyToSubcategory || patch.applyOverviewToSubcategory) {
+    const targetOverview = patch.overview ?? existingProduct.overview ?? "";
+    await bulkUpdateProductsBySubcategory(finalSub, { overview: targetOverview }, id);
+  }
+
+  return updatedRecord;
 }
 
 export async function deleteProduct(id: string, permanent: boolean = false, adminId?: string) {
@@ -736,3 +763,71 @@ export async function deleteProduct(id: string, permanent: boolean = false, admi
 
   return deleteRecord("products", id);
 }
+
+export async function getSubcategoryProductCount(subcategory: string): Promise<number> {
+  const canonSub = getCanonicalSubcategorySlug(subcategory);
+  const aliases = getSubcategorySlugAliases(canonSub || subcategory);
+
+  if (process.env.MONGODB_URI) {
+    await connectMongoDB();
+    return await ProductModel.countDocuments({
+      subcategory: { $in: aliases },
+      isDeleted: { $ne: true },
+    });
+  }
+
+  const products = listRecords("products");
+  return products.filter(
+    (p) => !p.isDeleted && aliases.includes(getCanonicalSubcategorySlug(p.subcategory) || p.subcategory)
+  ).length;
+}
+
+export async function bulkUpdateProductsBySubcategory(
+  subcategory: string,
+  updateFields: Record<string, any>,
+  excludeProductId?: string
+): Promise<{ matchedCount: number; modifiedCount: number }> {
+  if (!subcategory || !updateFields || Object.keys(updateFields).length === 0) {
+    return { matchedCount: 0, modifiedCount: 0 };
+  }
+
+  const canonSub = getCanonicalSubcategorySlug(subcategory);
+  const aliases = getSubcategorySlugAliases(canonSub || subcategory);
+
+  const query: Record<string, any> = {
+    subcategory: { $in: aliases },
+    isDeleted: { $ne: true },
+  };
+
+  if (excludeProductId) {
+    query._id = { $ne: excludeProductId };
+  }
+
+  if (process.env.MONGODB_URI) {
+    await connectMongoDB();
+    const result = await ProductModel.updateMany(query, { $set: updateFields });
+    return {
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
+    };
+  }
+
+  const records = listRecords("products");
+  let modifiedCount = 0;
+  let matchedCount = 0;
+
+  records.forEach((p) => {
+    if (
+      !p.isDeleted &&
+      p.id !== excludeProductId &&
+      aliases.includes(getCanonicalSubcategorySlug(p.subcategory) || p.subcategory)
+    ) {
+      matchedCount++;
+      updateRecord("products", p.id, updateFields);
+      modifiedCount++;
+    }
+  });
+
+  return { matchedCount, modifiedCount };
+}
+

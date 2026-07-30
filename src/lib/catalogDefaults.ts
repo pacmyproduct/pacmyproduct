@@ -794,15 +794,37 @@ export function getCategoryDefaultBranding(category?: string, subcategory?: stri
   return GENERIC_DEFAULT_BRANDING;
 }
 
+export interface ProductOverviewResolvable {
+  overview?: string;
+  rawOverview?: string;
+  category?: string;
+  subcategory?: string;
+  description?: string;
+  categoryOverview?: string;
+  subcategoryOverview?: string;
+}
+
 /**
- * Dynamically resolves product overview at runtime.
- * Priority: Admin Custom Value -> Category/Subcategory Default -> Generic Fallback
+ * Dynamically resolves product overview at runtime using hierarchical inheritance:
+ * Priority: 1. Product Custom Overview -> 2. Subcategory Overview -> 3. Category Overview -> 4. System Default
  */
-export function resolveProductOverview(product?: { overview?: string; category?: string; subcategory?: string; description?: string } | null): string {
+export function resolveProductOverview(product?: ProductOverviewResolvable | null): string {
   if (!product) return GENERIC_DEFAULT_OVERVIEW;
+
+  if (product.rawOverview && typeof product.rawOverview === "string" && product.rawOverview.trim().length > 0) {
+    return product.rawOverview.trim();
+  }
 
   if (product.overview && typeof product.overview === "string" && product.overview.trim().length > 0) {
     return product.overview.trim();
+  }
+
+  if (product.subcategoryOverview && typeof product.subcategoryOverview === "string" && product.subcategoryOverview.trim().length > 0) {
+    return product.subcategoryOverview.trim();
+  }
+
+  if (product.categoryOverview && typeof product.categoryOverview === "string" && product.categoryOverview.trim().length > 0) {
+    return product.categoryOverview.trim();
   }
 
   return getCategoryDefaultOverview(product.category, product.subcategory);

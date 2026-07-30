@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getDisplayCategoryName, getDisplaySubcategoryName, toDisplayName } from "@/lib/displayNames";
 import { resolveProductOverview, resolveProductBranding } from "@/lib/catalogDefaults";
+import { fetchLiveTaxonomy, resolveLiveOverview, TaxonomyCategory, TaxonomySubcategory } from "@/lib/liveOverviewResolver";
 
 export function ProductPreviewModal() {
   const { isOpen, product, closePreview } = useProductPreview();
@@ -17,6 +18,7 @@ export function ProductPreviewModal() {
   const [copied, setCopied] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [taxonomy, setTaxonomy] = useState<{ categories: TaxonomyCategory[]; subcategories: TaxonomySubcategory[] }>({ categories: [], subcategories: [] });
   const modalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -25,6 +27,7 @@ export function ProductPreviewModal() {
       setActiveIndex(0);
       setCopied(false);
       document.body.style.overflow = "hidden";
+      fetchLiveTaxonomy().then(setTaxonomy);
     } else {
       document.body.style.overflow = "unset";
     }
@@ -277,13 +280,14 @@ export function ProductPreviewModal() {
                   Product Overview
                 </h4>
                 {(() => {
-                  const overviewText = resolveProductOverview(product);
+                  const overviewText = resolveLiveOverview(product, taxonomy.categories, taxonomy.subcategories);
+                  if (!overviewText) return null;
                   const lines = overviewText.split("\n");
                   return (
-                    <div className="space-y-1 text-xs sm:text-sm text-gray-600 leading-relaxed font-medium">
+                    <div className="space-y-1 text-xs sm:text-sm text-gray-600 leading-relaxed font-medium whitespace-pre-wrap">
                       {lines.map((line, idx) => {
                         const trimmed = line.trim();
-                        if (!trimmed) return <div key={idx} className="h-1" />;
+                        if (!trimmed) return <div key={idx} className="h-1.5" />;
                         if (trimmed.startsWith("•") || trimmed.startsWith("-") || trimmed.startsWith("*")) {
                           const content = trimmed.replace(/^[\•\-\*]\s*/, "");
                           return (
@@ -303,7 +307,7 @@ export function ProductPreviewModal() {
                             </div>
                           );
                         }
-                        if (trimmed.endsWith(":") || (idx === 0 && !trimmed.includes("."))) {
+                        if (trimmed.endsWith(":")) {
                           return (
                             <h5 key={idx} className="font-bold text-gray-900 text-xs mt-2.5 mb-1 uppercase tracking-wider">
                               {trimmed}

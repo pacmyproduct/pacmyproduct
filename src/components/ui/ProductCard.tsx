@@ -35,6 +35,7 @@ interface ProductCardProps {
   features?: string[];
   displayName?: string;
   overview?: string;
+  rawOverview?: string;
   brandingCapabilities?: string[];
   showBrandingCapabilities?: boolean;
 }
@@ -58,6 +59,7 @@ export function ProductCard({
   features = [],
   displayName,
   overview,
+  rawOverview,
   brandingCapabilities,
   showBrandingCapabilities
 }: ProductCardProps) {
@@ -99,6 +101,7 @@ export function ProductCard({
         features: features.length > 0 ? features : brandingOptions,
         displayName,
         overview,
+        rawOverview,
         brandingCapabilities,
         showBrandingCapabilities
       });
@@ -123,6 +126,7 @@ export function ProductCard({
         features: features.length > 0 ? features : brandingOptions,
         displayName,
         overview,
+        rawOverview,
         brandingCapabilities,
         showBrandingCapabilities
       });
