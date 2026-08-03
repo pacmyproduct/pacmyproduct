@@ -85,6 +85,8 @@ export async function POST(req: Request) {
       applyToSubcategory: data.applyToSubcategory ?? data.applyOverviewToSubcategory,
       // @ts-ignore
       applyOverviewToSubcategory: data.applyOverviewToSubcategory ?? data.applyToSubcategory,
+      // @ts-ignore
+      applyBrandingVisibilityToSubcategory: data.applyBrandingVisibilityToSubcategory,
     });
 
 

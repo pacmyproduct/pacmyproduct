@@ -10,9 +10,12 @@ export async function revalidatePathsAndTags() {
     revalidatePath("/promotional-merchandise");
     revalidatePath("/budget");
     revalidatePath("/gifts-by-budget");
+    revalidatePath("/87564/admin/products");
+    revalidatePath("/admin/products");
 
     // Revalidate tags
     revalidateTag("products", "max");
+    revalidateTag("catalog", "max");
     revalidateTag("categories", "max");
     revalidateTag("subcategories", "max");
     revalidateTag("brands", "max");

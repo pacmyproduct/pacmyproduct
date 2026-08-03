@@ -141,7 +141,9 @@ interface Product {
   moq?: number;
   features?: string[];
   overview?: string;
+  rawOverview?: string;
   brandingCapabilities?: string[];
+  rawBrandingCapabilities?: string[];
   showBrandingCapabilities?: boolean;
 }
 
@@ -370,7 +372,11 @@ function CorporateKitsContent() {
         moq: p.moq || 0,
         href: undefined,
         images: p.images || [],
-        features: p.features || []
+        features: p.features || [],
+        overview: p.overview,
+        rawOverview: p.rawOverview,
+        brandingCapabilities: p.brandingCapabilities,
+        showBrandingCapabilities: p.showBrandingCapabilities,
       }));
     }
 
@@ -396,7 +402,11 @@ function CorporateKitsContent() {
       moq: p.moq || 0,
       href: undefined,
       images: p.images || [],
-      features: p.features || []
+      features: p.features || [],
+      overview: p.overview,
+      rawOverview: p.rawOverview,
+      brandingCapabilities: p.brandingCapabilities,
+      showBrandingCapabilities: p.showBrandingCapabilities,
     }));
 
     if (mapped.length > 0) return mapped;
@@ -474,7 +484,7 @@ function CorporateKitsContent() {
         </div>
 
         {/* Dynamic DB-driven Pills Selection */}
-        <div className="mb-14 rounded-2xl bg-white border border-gray-200/80 p-5 shadow-sm text-left">
+        <div className="mb-14 rounded-2xl bg-[#FAF9F6] border border-[#F5C2C2] p-5 shadow-sm text-left">
           <div className="text-[10px] font-extrabold uppercase tracking-widest mb-4 text-[#EF5350]">
             {activeTab === "festive" ? "Festive Hamper Collections" : "Corporate Kit Options"}
           </div>

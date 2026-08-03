@@ -598,9 +598,18 @@ export async function createProduct(input: Omit<ProductRecord, "id" | "createdAt
       order: input.order || 0,
     });
 
+    const bulkCreateFields: Record<string, any> = {};
     // @ts-ignore
-    if (input.applyToSubcategory || input.applyOverviewToSubcategory) {
-      await bulkUpdateProductsBySubcategory(canonicalSub, { overview: input.overview || "" }, String(product._id));
+    if (input.applyOverviewToSubcategory || input.applyToSubcategory) {
+      bulkCreateFields.overview = input.overview || "";
+    }
+    // @ts-ignore
+    if (input.applyBrandingVisibilityToSubcategory) {
+      bulkCreateFields.showBrandingCapabilities = input.showBrandingCapabilities !== false;
+    }
+
+    if (Object.keys(bulkCreateFields).length > 0) {
+      await bulkUpdateProductsBySubcategory(canonicalSub, bulkCreateFields, String(product._id));
     }
 
     return mapMongoProduct(product.toObject());
@@ -612,15 +621,32 @@ export async function createProduct(input: Omit<ProductRecord, "id" | "createdAt
     subcategory: canonicalSub,
   });
 
+  const bulkCreateFieldsFallback: Record<string, any> = {};
   // @ts-ignore
-  if (input.applyToSubcategory || input.applyOverviewToSubcategory) {
-    await bulkUpdateProductsBySubcategory(canonicalSub, { overview: input.overview || "" }, created.id);
+  if (input.applyOverviewToSubcategory || input.applyToSubcategory) {
+    bulkCreateFieldsFallback.overview = input.overview || "";
+  }
+  // @ts-ignore
+  if (input.applyBrandingVisibilityToSubcategory) {
+    bulkCreateFieldsFallback.showBrandingCapabilities = input.showBrandingCapabilities !== false;
+  }
+
+  if (Object.keys(bulkCreateFieldsFallback).length > 0) {
+    await bulkUpdateProductsBySubcategory(canonicalSub, bulkCreateFieldsFallback, created.id);
   }
 
   return created;
 }
 
-export async function updateProduct(id: string, patch: Partial<ProductRecord> & { status?: string; applyToSubcategory?: boolean; applyOverviewToSubcategory?: boolean }) {
+export async function updateProduct(
+  id: string,
+  patch: Partial<ProductRecord> & {
+    status?: string;
+    applyToSubcategory?: boolean;
+    applyOverviewToSubcategory?: boolean;
+    applyBrandingVisibilityToSubcategory?: boolean;
+  }
+) {
   const canonicalCat = patch.category ? getCanonicalCategorySlug(patch.category) : undefined;
   const canonicalSub = patch.subcategory ? getCanonicalSubcategorySlug(patch.subcategory) : undefined;
 
@@ -676,6 +702,21 @@ export async function updateProduct(id: string, patch: Partial<ProductRecord> & 
     }
   }
 
+  const resolvedOverview =
+    typeof patch.overview === "string" ? patch.overview.trim() : existingProduct.overview ?? "";
+  const resolvedBrandingVisibility =
+    patch.showBrandingCapabilities !== undefined
+      ? patch.showBrandingCapabilities
+      : existingProduct.showBrandingCapabilities !== false;
+
+  const bulkFields: Record<string, any> = {};
+  if (patch.applyOverviewToSubcategory || patch.applyToSubcategory) {
+    bulkFields.overview = resolvedOverview;
+  }
+  if (patch.applyBrandingVisibilityToSubcategory) {
+    bulkFields.showBrandingCapabilities = resolvedBrandingVisibility;
+  }
+
   if (process.env.MONGODB_URI) {
     await connectMongoDB();
     const images = patch.galleryImages?.length ? patch.galleryImages : patch.images;
@@ -713,13 +754,13 @@ export async function updateProduct(id: string, patch: Partial<ProductRecord> & 
 
     delete update.applyToSubcategory;
     delete update.applyOverviewToSubcategory;
+    delete update.applyBrandingVisibilityToSubcategory;
 
     Object.keys(update).forEach((key) => update[key] === undefined && delete update[key]);
     const product = await ProductModel.findByIdAndUpdate(id, { $set: update }, { new: true }).lean<any>();
 
-    if (patch.applyToSubcategory || patch.applyOverviewToSubcategory) {
-      const targetOverview = patch.overview ?? existingProduct.overview ?? "";
-      await bulkUpdateProductsBySubcategory(finalSub, { overview: targetOverview }, id);
+    if (Object.keys(bulkFields).length > 0) {
+      await bulkUpdateProductsBySubcategory(finalSub, bulkFields, id);
     }
 
     return product ? mapMongoProduct(product) : null;
@@ -731,9 +772,8 @@ export async function updateProduct(id: string, patch: Partial<ProductRecord> & 
     subcategory: canonicalSub ?? patch.subcategory,
   });
 
-  if (patch.applyToSubcategory || patch.applyOverviewToSubcategory) {
-    const targetOverview = patch.overview ?? existingProduct.overview ?? "";
-    await bulkUpdateProductsBySubcategory(finalSub, { overview: targetOverview }, id);
+  if (Object.keys(bulkFields).length > 0) {
+    await bulkUpdateProductsBySubcategory(finalSub, bulkFields, id);
   }
 
   return updatedRecord;

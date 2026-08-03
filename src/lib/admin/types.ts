@@ -62,6 +62,8 @@ export interface ProductRecord {
   order?: number;
   budget?: string;
   displayName?: string;
+  applyOverviewToSubcategory?: boolean;
+  applyBrandingVisibilityToSubcategory?: boolean;
   createdAt: string;
   updatedAt: string;
 }

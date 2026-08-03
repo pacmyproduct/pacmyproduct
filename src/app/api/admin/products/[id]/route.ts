@@ -40,6 +40,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       galleryPublicIds: data.galleryPublicIds,
       images: data.galleryImages,
       active: data.status ? data.status !== "HIDDEN" : data.active,
+      applyOverviewToSubcategory: data.applyOverviewToSubcategory ?? data.applyToSubcategory,
+      applyBrandingVisibilityToSubcategory: data.applyBrandingVisibilityToSubcategory,
     });
 
     if (updated) {

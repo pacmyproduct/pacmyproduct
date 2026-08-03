@@ -109,8 +109,9 @@ export function ProductManager() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isDisplayNameEdited, setIsDisplayNameEdited] = useState(false);
 
-  // Bulk Subcategory Overview states
+  // Bulk Subcategory Overview & Settings states
   const [applyOverviewToSubcategory, setApplyOverviewToSubcategory] = useState(false);
+  const [applyBrandingVisibilityToSubcategory, setApplyBrandingVisibilityToSubcategory] = useState(false);
   const [bulkConfirmModalOpen, setBulkConfirmModalOpen] = useState(false);
   const [affectedProductCount, setAffectedProductCount] = useState<number | null>(null);
   const [loadingAffectedCount, setLoadingAffectedCount] = useState(false);
@@ -244,6 +245,7 @@ export function ProductManager() {
     setUploadError("");
     setUploadSuccess("");
     setApplyOverviewToSubcategory(false);
+    setApplyBrandingVisibilityToSubcategory(false);
     setBulkConfirmModalOpen(false);
     setModalOpen(true);
   };
@@ -288,6 +290,7 @@ export function ProductManager() {
     setUploadError("");
     setUploadSuccess("");
     setApplyOverviewToSubcategory(false);
+    setApplyBrandingVisibilityToSubcategory(false);
     setBulkConfirmModalOpen(false);
     setModalOpen(true);
   };
@@ -367,7 +370,7 @@ export function ProductManager() {
     if (event) event.preventDefault();
     if (isUploading) return;
 
-    if (applyOverviewToSubcategory && !forceBulkConfirmed) {
+    if ((applyOverviewToSubcategory || applyBrandingVisibilityToSubcategory) && !forceBulkConfirmed) {
       setLoadingAffectedCount(true);
       setBulkConfirmModalOpen(true);
       try {
@@ -439,6 +442,7 @@ export function ProductManager() {
         displayName: form.displayName || "",
         applyToSubcategory: applyOverviewToSubcategory,
         applyOverviewToSubcategory: applyOverviewToSubcategory,
+        applyBrandingVisibilityToSubcategory: applyBrandingVisibilityToSubcategory,
       };
 
       const res = await fetch(editingId ? `/api/admin/products/${editingId}` : "/api/admin/products", {
@@ -455,6 +459,8 @@ export function ProductManager() {
       setUploadedPublicIdsInSession([]); // Clear session tracker so files aren't deleted
       setSaving(false);
       setBulkConfirmModalOpen(false);
+      setApplyOverviewToSubcategory(false);
+      setApplyBrandingVisibilityToSubcategory(false);
       setModalOpen(false);
       await load();
     } catch (err: any) {
@@ -1184,6 +1190,21 @@ export function ProductManager() {
                     )}
                   </div>
 
+                  <div className="pt-1">
+                    <label className="inline-flex items-center gap-2 text-xs font-bold text-[#C62828] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={applyBrandingVisibilityToSubcategory}
+                        onChange={(e) => setApplyBrandingVisibilityToSubcategory(e.target.checked)}
+                        className="rounded accent-[#D32F2F] h-4 w-4"
+                      />
+                      Apply this Branding Capabilities setting to all products in this subcategory
+                    </label>
+                    <p className="text-[11px] text-[#6B6B63] pl-6 font-medium mt-0.5">
+                      Updates the Branding Capabilities visibility for every product in this subcategory.
+                    </p>
+                  </div>
+
                   {form.showBrandingCapabilities !== false ? (
                     <div className="space-y-2">
                       <div className="flex gap-2">
@@ -1346,12 +1367,12 @@ export function ProductManager() {
         </div>
       )}
 
-      {/* Bulk Overview Confirmation Modal */}
+      {/* Bulk Settings Confirmation Modal */}
       {bulkConfirmModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B2B2B]/45 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md rounded-xl border border-[#F5C2C2] bg-[#FFFDF8] p-6 text-[#2B2B2B] shadow-2xl text-left space-y-4">
             <div className="flex items-center justify-between border-b border-[#E9E1D5] pb-3">
-              <h2 className="text-lg font-black text-[#2B2B2B]">Apply Overview to All Products?</h2>
+              <h2 className="text-lg font-black text-[#2B2B2B]">Apply Changes to All Products?</h2>
               <button
                 type="button"
                 onClick={() => setBulkConfirmModalOpen(false)}
@@ -1363,10 +1384,28 @@ export function ProductManager() {
 
             <div className="space-y-3 text-sm text-[#6B6B63] leading-relaxed">
               <p>
-                This will update the Product Overview for every product in:
+                This will update every product inside:
               </p>
               <div className="font-extrabold text-[#D32F2F] bg-[#FDECEC] px-3.5 py-2 rounded-lg border border-[#F5C2C2] text-sm">
                 {subcategories.find((s) => s.slug === form.subcategory)?.name || getCanonicalSubcategoryName(form.subcategory) || (form.subcategory ? form.subcategory.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Subcategory")}
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6B6B63] block">
+                  Changes Being Applied:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {applyOverviewToSubcategory && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7] px-3 py-1 rounded-full text-xs font-bold shadow-xs">
+                      ✓ Product Overview
+                    </span>
+                  )}
+                  {applyBrandingVisibilityToSubcategory && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7] px-3 py-1 rounded-full text-xs font-bold shadow-xs">
+                      ✓ Branding Capabilities Visibility
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center justify-between bg-[#FAF9F6] p-3 rounded-lg border border-[#E9E1D5]">
@@ -1377,13 +1416,13 @@ export function ProductManager() {
                   {loadingAffectedCount ? (
                     <Loader2 className="h-4 w-4 animate-spin inline" />
                   ) : (
-                    affectedProductCount ?? 0
+                    `${affectedProductCount ?? 0} Products`
                   )}
                 </span>
               </div>
 
               <p className="text-xs text-[#8A4B22] font-semibold bg-[#F3E7D7] p-2.5 rounded-lg border border-[#EAD7C8]">
-                This action only affects this subcategory.
+                This action only affects products in this subcategory.
               </p>
             </div>
 
