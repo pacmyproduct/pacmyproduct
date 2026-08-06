@@ -105,7 +105,7 @@ export function Footer() {
               Subscribe to Gifting Insights &amp; Catalogues
             </h4>
             <p className="text-xs text-[rgba(255,255,255,0.88)] max-w-lg">
-              Receive quarterly showcases of new gifting collections, packaging design trends, and priority sample dispatch programs.
+              Receive quarterly showcases of new gifting collections, custom packaging trends, and priority sample dispatch programs.
             </p>
             
             <form onSubmit={handleSubscribe} className="relative max-w-md w-full">

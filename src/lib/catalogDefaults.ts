@@ -357,7 +357,7 @@ Ideal Applications
 Customization Highlights
 • High-utility daily items for counter use
 • Durable screen printing & pad printing
-• Compact shipping-friendly box design`,
+• Compact shipping-friendly box packaging`,
 
   "mason-kits": `Available Variants
 • Tradesman Daily Utility Kit

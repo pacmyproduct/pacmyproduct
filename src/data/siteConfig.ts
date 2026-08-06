@@ -65,7 +65,7 @@ export const OCCASION_HAMPERS = [
 export const PACKAGING_SOLUTIONS = [
   { name: "Mono Cartons", slug: "mono", href: "/packaging-solutions?type=mono" },
   { name: "Rigid Boxes", slug: "rigid", href: "/packaging-solutions?type=rigid" },
-  { name: "Corrugated Cartons", slug: "corrugated", href: "/packaging-solutions?type=corrugated" },
+  { name: "Customized Packaging", slug: "corrugated", href: "/packaging-solutions?type=corrugated" },
   { name: "Luxury Gift Boxes", slug: "luxury-gift-boxes", href: "/packaging-solutions?type=luxury-gift-boxes" }
 ];
 
@@ -1540,7 +1540,7 @@ const BASE_SITE_PACKAGING = [
   },
   {
     id: "corrugated",
-    title: "Corrugated Cartons",
+    title: "Customized Packaging",
     tagline: "Heavy-Duty E-commerce Shipping",
     desc: "Durable fluted shipping cartons built for secure transit and e-commerce deliveries.",
     img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=800&q=80",
@@ -1690,7 +1690,7 @@ export const IMAGE_AUDIT_REPORT = {
 };
 
 export const PROCESS_STEPS = [
-  { step: "01", name: "Dieline Drafting", description: "Custom 3D layout template matching your product dimensions." },
+  { step: "01", name: "Specification & Sampling", description: "Custom 3D layout template matching your product dimensions." },
   { step: "02", name: "Material Curation", description: "Select the paper stock, board thickness, and textures." },
   { step: "03", name: "Premium Finishing", description: "Lamination, spot UV, or metallic foil embossing." },
   { step: "04", name: "Bulk Die-Cutting & QA", description: "Automatic cutting, folding, and 100% QA checks." }

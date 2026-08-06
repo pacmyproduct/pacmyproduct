@@ -35,12 +35,12 @@ export function CtaSection() {
             <motion.span variants={prefersReduced ? undefined : staggerItem} className="text-[#EF5350] text-xs font-bold tracking-widest uppercase block">Ready to Partner?</motion.span>
             
             <motion.h2 variants={prefersReduced ? undefined : staggerItem} className="text-3xl md:text-5xl font-black text-white leading-tight">
-              Let&apos;s Design Your Custom <br />
+              Let&apos;s Create Your Custom <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EF5350] via-[#e8c68a] to-[#EF5350]">Gifting Experience</span>
             </motion.h2>
             
             <motion.p variants={prefersReduced ? undefined : staggerItem} className="text-sm sm:text-base md:text-lg text-gray-300 max-w-xl mx-auto leading-relaxed font-medium">
-              Contact our corporate gifting style consultants. Get free catalogue samples, structural diework designs, and custom branding proposals.
+              Contact our corporate gifting style consultants. Get free catalogue samples, packaging samples, and custom branding proposals.
             </motion.p>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">

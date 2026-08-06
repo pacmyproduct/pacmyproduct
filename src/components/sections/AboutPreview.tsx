@@ -59,7 +59,7 @@ export function AboutPreview() {
                 <span className="text-[#D32F2F]">Corporate Gifting Partner</span>
               </h2>
               <p className="text-sm sm:text-base text-[#6B6B63] mt-4 leading-relaxed max-w-xl font-medium">
-                We handle the complete corporate merchandising lifecycle. From design dielines to door-step delivery, we ensure brand consistency and premium B2B execution.
+                We handle the complete corporate merchandising lifecycle. From product curation to doorstep delivery, we ensure brand consistency and premium B2B execution.
               </p>
             </div>
 

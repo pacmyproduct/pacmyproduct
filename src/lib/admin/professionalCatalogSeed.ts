@@ -108,7 +108,7 @@ const subcategoryNames: Record<string, string[]> = {
   "festive-hampers": [
     "Diwali Hampers", "Holi Hampers", "Eid Kits", "Women's Day Gifts", "Christmas Kits", "New Year Hampers"
   ],
-  packaging: ["Mono Cartons", "Rigid Boxes", "Corrugated Cartons"],
+  packaging: ["Mono Cartons", "Rigid Boxes", "Customized Packaging"],
 };
 
 export const PROFESSIONAL_SUBCATEGORIES: SubcategoryRecord[] = Object.entries(subcategoryNames).flatMap(([categorySlug, names]) => {

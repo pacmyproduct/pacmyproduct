@@ -586,7 +586,7 @@ function CorporateKitsContent() {
                 Want to curate a <span className="text-[#EF5350]">completely custom</span> kit?
               </h3>
               <p className="text-[#F5C2C2] text-sm md:text-base leading-relaxed">
-                Tell us your budget, quantity, and product preferences. Our team will draft custom dielines, mockups, and organize pan-India door-to-door delivery.
+                Tell us your budget, quantity, and product preferences. Our team will prepare custom sample proofs, mockups, and organize pan-India door-to-door delivery.
               </p>
             </div>
             <div className="flex-shrink-0 w-full md:w-auto">

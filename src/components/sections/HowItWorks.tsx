@@ -19,8 +19,8 @@ const STEPS = [
   },
   {
     icon: <CheckCircle className="w-8 h-8" />,
-    title: "3. Approve Design",
-    desc: "Finalize products and approve the digital mockup of your corporate branding."
+    title: "3. Approve Sample",
+    desc: "Finalize products and approve the digital mockup or physical sample of your corporate branding."
   },
   {
     icon: <Truck className="w-8 h-8" />,

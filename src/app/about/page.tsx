@@ -22,8 +22,8 @@ const EXPERTISE = [
     icon: <Gift className="w-8 h-8 text-[#D32F2F]" />
   },
   {
-    title: "In-House Packaging Design",
-    desc: "In-house design and manufacturing of custom boxes, from rigid premium presentation box cases to heavy-duty shipping cartons.",
+    title: "Customized Packaging Solutions",
+    desc: "We manufacture premium customized packaging solutions including rigid boxes, mono cartons, gift boxes, sleeves, paper bags, and branded packaging tailored for corporate gifting and business requirements.",
     icon: <Box className="w-8 h-8 text-[#D32F2F]" />
   },
   {
@@ -57,10 +57,10 @@ export default function AboutPage() {
               Strategic B2B Partner for Corporate Gifting & Packaging
             </h3>
             <p className="text-[#6B6B63] text-sm sm:text-base leading-relaxed mb-6 font-medium">
-              PacMyProduct is India's leading B2B platform specializing in end-to-end corporate gifting expertise and advanced packaging solutions capability. We help brands strengthen their professional relationships through thoughtfully curated gifts and premium presentation.
+              PacMyProduct is a trusted B2B partner specializing in premium corporate gifting solutions and customized packaging manufacturing. We help businesses create memorable brand experiences through thoughtfully curated gifts, personalized merchandise, and high-quality packaging solutions.
             </p>
             <p className="text-[#6B6B63] text-sm sm:text-base leading-relaxed mb-8 font-medium">
-              From conceptualizing employee welcome kits to manufacturing high-volume corrugated cartons for enterprise programs, our integrated approach keeps quality, consistency, and presentation aligned from brief to final handover.
+              From employee onboarding kits and executive gifting to festive hampers, promotional merchandise, and customized packaging, we deliver high-quality solutions that help organizations strengthen relationships with employees, clients, channel partners, and business associates.
             </p>
             <Button size="lg" className="rounded-xl text-sm px-10 font-bold py-4" asChild>
               <Link href="/enquiry">Partner With Us</Link>

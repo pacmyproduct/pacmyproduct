@@ -18,7 +18,7 @@ export function CustomizationPreview() {
           >
             <h2 className="text-4xl font-bold text-[#2B2B2B] mb-6">See Your Brand Come to Life</h2>
             <p className="text-lg text-[#6B6B63] mb-8">
-              We offer comprehensive customization options from elegant UV printing to subtle screen debossing. Simply upload your logo and our design team will render high-fidelity mockups for your approval.
+              We offer comprehensive customization options from elegant UV printing to subtle screen debossing. Simply upload your logo and our team will prepare high-fidelity mockups for your approval.
             </p>
             
             <div className="space-y-6">

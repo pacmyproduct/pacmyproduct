@@ -252,7 +252,7 @@ function EnquiryFormContainer() {
   const packagingOptions = [
     { id: "Mono Carton", name: "Custom Mono Carton", desc: "Sleek retail card boxes" },
     { id: "Rigid Box", name: "Luxury Rigid Box", desc: "Premium thick cardboard gift cases" },
-    { id: "Corrugated Carton", name: "Corrugated Box", desc: "Heavy duty shipping-safe cartons" },
+    { id: "Customized Packaging", name: "Customized Box", desc: "Durable shipping-safe packaging" },
     { id: "Eco Pouch", name: "Cotton / Jute Pouch", desc: "Sustainable drawstring bag style" },
     { id: "Standard Box", name: "Standard Gifting Box", desc: "Classic corporate gifting pack" }
   ];
@@ -362,7 +362,7 @@ function EnquiryFormContainer() {
                         <Package className="w-5 h-5 text-red-500" />
                         Select Gifting Swag / Box Items
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Review preselected items or describe custom items you need designed.</p>
+                      <p className="text-xs text-gray-500 font-semibold">Review preselected items or describe custom items you need produced.</p>
                     </div>
 
                     {((isShortlistSource && items.length > 0) || singleProduct || category || subcategory || brand) ? (

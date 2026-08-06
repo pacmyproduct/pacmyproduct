@@ -78,7 +78,7 @@ export default function GalleryPage() {
           </span>
           <SectionHeading 
             title={<>Our Past <span className="text-red-600">Creations</span></>}
-            subtitle="Take a look at the design details, craftsmanship, and branding quality of some premium bespoke kits and custom boxes we have executed." 
+            subtitle="Take a look at the product details, craftsmanship, and branding quality of some premium bespoke kits and custom boxes we have executed." 
             centered 
           />
         </div>

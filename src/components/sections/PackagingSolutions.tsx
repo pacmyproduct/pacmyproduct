@@ -43,7 +43,7 @@ export function PackagingSolutions() {
               Premium <span className="text-[#D32F2F]">Packaging Solutions</span>
             </h2>
             <p className="text-base sm:text-lg text-[#6B6B63]">
-              We design and manufacture structural boxes that guard your products and communicate luxury at first contact.
+              We manufacture premium customized packaging solutions designed for safe, attractive, and high-quality product presentation.
             </p>
           </div>
           <Button variant="outline" className="hidden md:inline-flex rounded-xl font-bold" asChild>
@@ -96,9 +96,9 @@ export function PackagingSolutions() {
               </div>
               
               {[
-                { title: "Box Dielines & Custom Cuts", content: "Our team drafts precise CAD dielines corresponding to your items. We dispatch flat physical proofs for shape approval before printing." },
+                { title: "Custom Sizing & Precision Cuts", content: "Our team creates precise packaging templates corresponding to your items. We dispatch physical sample proofs for shape approval before printing." },
                 { title: "ECO Board Materials", content: "From recycled FSC kraft paper stocks to double-ply white test liners. Choose between E/B flutes or solid greyboards from 1.5mm to 3mm." },
-                { title: "SLA Production Timelines", content: "Production ranges from 5 to 7 days for corrugated mailers, and up to 14 working days for complex handmade rigid gift chests." }
+                { title: "SLA Production Timelines", content: "Production ranges from 5 to 7 days for custom mailers, and up to 14 working days for complex handmade rigid gift chests." }
               ].map((item, idx) => (
                 <div key={idx} className="border border-[#F5C2C2] rounded-xl bg-white overflow-hidden shadow-sm text-left">
                   <button
