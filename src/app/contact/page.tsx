@@ -25,10 +25,11 @@ export default function ContactPage() {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setStatus("submitting");
     setErrorMessage("");
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
     const name = formData.get("name") as string;
     const company = formData.get("company") as string;
     const email = formData.get("email") as string;
@@ -61,7 +62,7 @@ export default function ContactPage() {
 
       if (result.success) {
         setStatus("success");
-        e.currentTarget.reset();
+        form.reset();
       } else {
         setErrorMessage(result.message || "Failed to send message. Please try again.");
         setStatus("error");

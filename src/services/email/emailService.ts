@@ -28,15 +28,22 @@ async function sendEmail(input: EmailSendInput) {
       replyTo: input.replyTo,
     });
 
+    const isSuccess = !result.error && Boolean(result.data?.id);
+
+    if (result.error) {
+      console.error(`[Resend Error] ${input.type} to ${input.to}: ${result.error.message}`);
+    }
+
     return logEmail({
       type: input.type,
       recipient: input.to,
       subject: input.subject,
-      status: "SENT",
+      status: isSuccess ? "SENT" : "FAILED",
       providerMessageId: result.data?.id,
       error: result.error?.message,
     });
   } catch (error) {
+    console.error(`[Resend Exception] ${input.type} to ${input.to}:`, error);
     return logEmail({
       type: input.type,
       recipient: input.to,
