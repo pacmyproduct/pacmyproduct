@@ -18,6 +18,7 @@ import {
   ExternalLink 
 } from "lucide-react";
 import { COMPANY_INFO } from "@/data/siteConfig";
+import { sendContactEmail } from "@/lib/emailjs";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -43,7 +44,8 @@ export default function ContactPage() {
     }
 
     try {
-      const response = await fetch("/api/enquiry", {
+      // 1. Save to MongoDB
+      await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -51,25 +53,30 @@ export default function ContactPage() {
           company,
           email,
           phone,
-          quantity: "Not Specified",
-          budget: "Not Specified",
-          deliveryLocation: "Single Location",
-          message: `--- Quick Contact Form Inquiry ---\n${message || "No message provided."}`,
+          source: "Contact Form",
+          message: message || "No message provided.",
         }),
       });
 
-      const result = await response.json();
+      // 2. Send via EmailJS
+      const emailResult = await sendContactEmail({
+        customer_name: name,
+        company_name: company,
+        customer_email: email,
+        phone,
+        requirements: message || "",
+      });
 
-      if (result.success) {
+      if (emailResult.success) {
         setStatus("success");
         form.reset();
       } else {
-        setErrorMessage(result.message || "Failed to send message. Please try again.");
+        setErrorMessage("Unable to submit your enquiry right now. Please try again or contact us directly.");
         setStatus("error");
       }
     } catch (err) {
       console.error(err);
-      setErrorMessage("An error occurred while sending your request.");
+      setErrorMessage("Unable to submit your enquiry right now. Please try again or contact us directly.");
       setStatus("error");
     }
   };
@@ -162,8 +169,19 @@ export default function ContactPage() {
                   <div>
                     <h4 className="font-extrabold text-sm text-[#2B2B2B] mb-1">Corporate HQ</h4>
                     <p className="text-[#6B6B63] text-xs leading-relaxed font-semibold">
-                      {COMPANY_INFO.address}
+                      OF-653, 6th Floor, Satya The Hive<br />
+                      Sector 102, Dwarka Expressway<br />
+                      Gurugram, Haryana, India – 122006
                     </p>
+                    <a
+                      href={COMPANY_INFO.directionsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#D32F2F] hover:underline mt-2"
+                    >
+                      <span>Get Directions</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
 
@@ -221,14 +239,11 @@ export default function ContactPage() {
                     <div className="w-20 h-20 bg-[#FDECEC] text-[#D32F2F] rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce">
                       <CheckCircle2 className="w-10 h-10" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent Successfully!</h3>
-                    <p className="text-gray-600 text-xs max-w-sm mb-6 leading-relaxed">
-                      Thank you. We have received your query and will reply via email or phone shortly.
-                    </p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Thank you! Your enquiry has been submitted successfully. Our team will get back to you shortly.</h3>
                     <Button 
                       variant="outline" 
                       onClick={() => setStatus("idle")}
-                      className="px-6 text-xs font-bold rounded-xl"
+                      className="px-6 text-xs font-bold rounded-xl mt-4"
                     >
                       Send Another Message
                     </Button>
@@ -309,7 +324,7 @@ export default function ContactPage() {
                         {status === "submitting" ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Sending Message...
+                            Sending...
                           </>
                         ) : (
                           <>
@@ -339,7 +354,7 @@ export default function ContactPage() {
             <p className="text-xs text-gray-400 leading-relaxed mb-4 font-medium">
               We manage dedicated fulfillment hubs and shipping networks to guarantee safe transit to corporate offices and residences.
             </p>
-            <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-300">
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-300 mb-4">
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D32F2F] animate-pulse" /> North Hub
               </div>
@@ -356,6 +371,15 @@ export default function ContactPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D32F2F] animate-pulse" /> Central Hub
               </div>
             </div>
+            <a
+              href={COMPANY_INFO.directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#D32F2F] hover:bg-[#B71C1C] text-white text-xs font-bold rounded-xl transition-all shadow-md group/btn"
+            >
+              <span>Get Directions</span>
+              <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5" />
+            </a>
           </div>
 
           <div className="h-[450px] w-full rounded-2xl overflow-hidden relative">

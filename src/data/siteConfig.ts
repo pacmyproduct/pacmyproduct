@@ -3,12 +3,13 @@ import { localCatalogImage } from "@/lib/localCatalogImages";
 
 export const COMPANY_INFO = {
   name: "PacMyProduct",
-  address: "Of-653, 6Th Floor, Satya The Hive Sector 102, Dwarka expressway Gurgaon Haryana India-122006",
+  address: "OF-653, 6th Floor, Satya The Hive, Sector 102, Dwarka Expressway, Gurugram, Haryana, India – 122006",
   phone: "+91 9599139303",
   email: "pacmyproduct@gmail.com",
   whatsapp: "https://wa.me/919599139303?text=Hi%2C%20I%20am%20interested%20in%20corporate%20gifting%20and%20packaging%20solutions.",
   gst: "Registered enterprise billing with full GST input tax credits.",
-  mapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3510.1065424637073!2d77.02781467629524!3d28.40680057578788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d22d02ce18f6d%3A0xe40da7b66d3e53f2!2sSatya%20The%20Hive%2C%20Sector%20102%2C%20Gurugram%2C%20Haryana%20122006!5e0!3m2!1sen!2sin!4v1750848000000!5m2!1sen!2sin",
+  mapsUrl: "https://maps.google.com/maps?q=OF-653%2C+6th+Floor%2C+Satya+The+Hive%2C+Sector+102%2C+Dwarka+Expressway%2C+Gurugram%2C+Haryana+122006%2C+India&t=&z=16&ie=UTF8&iwloc=&output=embed",
+  directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=OF-653%2C+6th+Floor%2C+Satya+The+Hive%2C+Sector+102%2C+Dwarka+Expressway%2C+Gurugram%2C+Haryana+122006%2C+India",
   timings: "Monday to Saturday: 10:00 AM — 7:00 PM (IST)"
 };
 

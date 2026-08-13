@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createEnquiry } from "@/services/admin/enquiryService";
 import { createQuote } from "@/services/admin/quoteService";
-import { sendContactWorkflow, sendQuoteWorkflow } from "@/services/email/emailService";
 
 interface ShortlistItem {
   title?: string;
@@ -16,6 +15,7 @@ interface EnquiryPayload {
   quantity?: string;
   budget?: string;
   deliveryLocation?: string;
+  deliveryAddress?: string;
   source?: string;
   message?: string;
   shortlist?: ShortlistItem[];
@@ -29,17 +29,17 @@ function getRequestedProducts(payload: EnquiryPayload) {
 }
 
 function isQuoteRequest(payload: EnquiryPayload) {
-  if (payload.source === "contact-form" || payload.message?.includes("Quick Contact Form Inquiry")) {
+  if (payload.source === "contact-form" || payload.source === "Contact Form" || payload.message?.includes("Quick Contact Form Inquiry")) {
     return false;
   }
 
-  return Boolean(payload.quantity || payload.budget || payload.deliveryLocation || payload.shortlist?.length);
+  return Boolean(payload.quantity || payload.budget || payload.deliveryLocation || payload.deliveryAddress || payload.shortlist?.length);
 }
 
 export async function POST(req: Request) {
   try {
     const payload = (await req.json()) as EnquiryPayload;
-    const { name, company, email, phone, quantity, deliveryLocation, message, source } = payload;
+    const { name, company, email, phone, quantity, deliveryLocation, deliveryAddress, message, source } = payload;
 
     if (!name || !email || !phone) {
       return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     const fullMessage = [
       message,
       payload.budget ? `Budget: ${payload.budget}` : "",
-      deliveryLocation ? `Delivery: ${deliveryLocation}` : "",
+      deliveryAddress ? `Delivery Address: ${deliveryAddress}` : deliveryLocation ? `Delivery Protocol: ${deliveryLocation}` : "",
     ]
       .filter(Boolean)
       .join("\n");
@@ -65,16 +65,6 @@ export async function POST(req: Request) {
         message: fullMessage,
       });
 
-      await sendQuoteWorkflow({
-        name,
-        email,
-        phone,
-        company,
-        product: products.join(", "),
-        quantity: quote.quantity,
-        message: fullMessage,
-      });
-
       return NextResponse.json({ success: true, message: "Quote request received successfully", data: { quoteId: quote.id } });
     }
 
@@ -83,17 +73,8 @@ export async function POST(req: Request) {
       email,
       phone,
       company,
-      source: source || "contact-form",
+      source: source || "Contact Form",
       message: fullMessage || message,
-    });
-
-    await sendContactWorkflow({
-      name,
-      email,
-      phone,
-      company,
-      source: enquiry.source,
-      message: enquiry.message,
     });
 
     return NextResponse.json({ success: true, message: "Enquiry received successfully", data: { enquiryId: enquiry.id } });

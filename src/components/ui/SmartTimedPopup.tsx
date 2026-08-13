@@ -8,6 +8,7 @@ import {
   Phone, ShoppingBag, HelpCircle, Gift, Sparkles, ShieldCheck, Clock
 } from "lucide-react";
 import { useProductPreview } from "@/context/ProductPreviewContext";
+import { sendCorporateQuoteEmail } from "@/lib/emailjs";
 
 export function SmartTimedPopup() {
   const pathname = usePathname();
@@ -179,26 +180,44 @@ export function SmartTimedPopup() {
       phone: form.phone,
       quantity: form.quantity,
       budget: "Not Specified",
-      deliveryLocation: "Domestic Office Dispatch",
-      shortlist: [{ title: "Enterprise Quote Popup Request" }],
+      source: "Corporate Quote Popup",
       message: `--- Corporate Gifting Requirements ---\n${form.requirements || "No specifications detailed."}`
     };
 
     try {
-      const res = await fetch("/api/enquiry", {
+      // 1. Save to MongoDB
+      await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      }).then((r) => r.json());
+      });
 
-      if (res.success) {
+      // 2. Send via EmailJS
+      const emailResult = await sendCorporateQuoteEmail({
+        customer_name: form.name,
+        company_name: form.company,
+        customer_email: form.email,
+        phone: form.phone,
+        quantity: form.quantity,
+        requirements: form.requirements || "",
+      });
+
+      if (emailResult.success) {
         setStatus("success");
         sessionStorage.setItem("enquirySubmitted", "true");
+        setForm({
+          name: "",
+          company: "",
+          email: "",
+          phone: "",
+          quantity: "",
+          requirements: "",
+        });
         setTimeout(() => {
           setIsOpen(false);
         }, 2500);
       } else {
-        setErrorMsg(res.message || "Failed to submit request. Please try again.");
+        setErrorMsg(emailResult.message || "Failed to submit request. Please try again.");
         setStatus("error");
       }
     } catch (err) {

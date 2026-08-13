@@ -7,6 +7,8 @@ import { Send, CheckCircle2, Loader2, AlertCircle, Package } from "lucide-react"
 import { useShortlist } from "@/context/ShortlistContext";
 import { getShortlistItemDisplayName } from "@/lib/enquiryHelper";
 
+import { sendProductQuoteEmail } from "@/lib/emailjs";
+
 export function BulkEnquiryForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,7 +22,7 @@ export function BulkEnquiryForm() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    let finalPayload: any = { ...data };
+    let finalPayload: any = { ...data, source: "Product Quote" };
     if (items.length > 0) {
       finalPayload.shortlist = items.map(item => ({
         title: getShortlistItemDisplayName(item),
@@ -29,18 +31,30 @@ export function BulkEnquiryForm() {
     }
 
     try {
-      const response = await fetch("/api/enquiry", {
+      // 1. Save to MongoDB
+      await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalPayload),
       });
 
-      const result = await response.json();
+      // 2. Send via EmailJS
+      const emailResult = await sendProductQuoteEmail({
+        customer_name: (data.name as string) || (data.customerName as string) || "",
+        company_name: (data.company as string) || "",
+        customer_email: (data.email as string) || "",
+        phone: (data.phone as string) || "",
+        product_name: items.length > 0 ? items.map(getShortlistItemDisplayName).join(", ") : (data.product as string) || "Bulk Enquiry",
+        quantity: (data.quantity as string) || "",
+        budget: (data.budget as string) || "",
+        delivery_address: (data.deliveryAddress as string) || (data.address as string) || "",
+        requirements: (data.message as string) || (data.requirements as string) || "",
+      });
 
-      if (result.success) {
+      if (emailResult.success) {
         setStatus("success");
       } else {
-        setErrorMessage(result.message || "Failed to send enquiry. Please try again.");
+        setErrorMessage(emailResult.message || "Failed to send enquiry. Please try again.");
         setStatus("error");
       }
     } catch (err: any) {

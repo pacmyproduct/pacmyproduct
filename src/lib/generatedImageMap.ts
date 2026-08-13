@@ -63,77 +63,10 @@ export const KITSIMAGES_FILES: string[] = [
   "womendaypremiumhamper.png"
 ];
 export const BUDGET_IMAGES_MAP: Record<string, string[]> = {
-  "0-250": [
-    "Screenshot 2026-07-14 122913.png",
-    "Screenshot 2026-07-14 122935.png",
-    "Screenshot 2026-07-14 122952.png",
-    "Screenshot 2026-07-14 122959.png",
-    "Screenshot 2026-07-14 123011.png",
-    "Screenshot 2026-07-14 123016.png",
-    "Screenshot 2026-07-14 123039.png",
-    "Screenshot 2026-07-14 123052.png",
-    "Screenshot 2026-07-14 123108.png"
-  ],
-  "250-500": [
-    "Screenshot 2026-07-14 122926.png",
-    "Screenshot 2026-07-14 122944.png",
-    "Screenshot 2026-07-14 122952.png",
-    "Screenshot 2026-07-14 123027.png",
-    "Screenshot 2026-07-14 123607.png",
-    "Screenshot 2026-07-14 123614.png",
-    "Screenshot 2026-07-14 123621.png"
-  ],
-  "500-1000": [
-    "Screenshot 2026-07-14 125025.png",
-    "Screenshot 2026-07-14 125032.png",
-    "Screenshot 2026-07-14 125043.png",
-    "Screenshot 2026-07-14 125109.png",
-    "Screenshot 2026-07-14 125116.png",
-    "Screenshot 2026-07-14 125124.png",
-    "Screenshot 2026-07-14 125132.png",
-    "Screenshot 2026-07-14 125140.png",
-    "Screenshot 2026-07-14 125151.png",
-    "Screenshot 2026-07-14 125202.png"
-  ],
-  "1000-2500": [
-    "Screenshot 2026-07-14 125427.png",
-    "Screenshot 2026-07-14 125434.png",
-    "Screenshot 2026-07-14 125440.png",
-    "Screenshot 2026-07-14 125447.png",
-    "Screenshot 2026-07-14 125454.png",
-    "Screenshot 2026-07-14 125501.png",
-    "Screenshot 2026-07-14 125507.png",
-    "Screenshot 2026-07-14 125515.png",
-    "Screenshot 2026-07-14 125524.png",
-    "Screenshot 2026-07-14 125536.png",
-    "Screenshot 2026-07-14 125544.png"
-  ],
-  "2500-5000": [
-    "Screenshot 2026-07-14 125820.png",
-    "Screenshot 2026-07-14 125828.png",
-    "Screenshot 2026-07-14 125840.png",
-    "Screenshot 2026-07-14 125859.png",
-    "Screenshot 2026-07-14 125909.png",
-    "Screenshot 2026-07-14 125920.png",
-    "Screenshot 2026-07-14 125939.png",
-    "Screenshot 2026-07-14 125945.png",
-    "Screenshot 2026-07-14 125952.png",
-    "Screenshot 2026-07-14 125958.png",
-    "Screenshot 2026-07-14 130003.png",
-    "Screenshot 2026-07-14 130013.png",
-    "Screenshot 2026-07-14 130032.png"
-  ],
-  "5000+": [
-    "Screenshot 2026-07-14 130252.png",
-    "Screenshot 2026-07-14 130259.png",
-    "Screenshot 2026-07-14 130307.png",
-    "Screenshot 2026-07-14 130312.png",
-    "Screenshot 2026-07-14 130320.png",
-    "Screenshot 2026-07-14 130326.png",
-    "Screenshot 2026-07-14 130333.png",
-    "Screenshot 2026-07-14 130348.png",
-    "Screenshot 2026-07-14 130356.png",
-    "Screenshot 2026-07-14 130406.png",
-    "Screenshot 2026-07-14 130422.png"
-  ]
+  "0-250": [],
+  "250-500": [],
+  "500-1000": [],
+  "1000-2500": [],
+  "2500-5000": [],
+  "5000+": []
 };

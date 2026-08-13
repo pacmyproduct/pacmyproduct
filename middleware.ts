@@ -1,5 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()).filter(Boolean)
+  : [
+      "https://pacmyproduct.com",
+      "https://www.pacmyproduct.com",
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ];
+
+function getCorsHeaders(origin: string | null) {
+  const isAllowed = origin && allowedOrigins.includes(origin);
+  const allowedOrigin = isAllowed ? origin : allowedOrigins[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+  };
+}
+
 const base64UrlToBytes = (value: string) => {
   const base64 = value.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(value.length / 4) * 4, "=");
   const binary = atob(base64);
@@ -99,10 +119,33 @@ const canAccessAdminPage = (role: string, pathname: string) => {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const origin = req.headers.get("origin");
 
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    return new NextResponse("Not Found", { status: 404 });
+  // Redirect legacy /admin paths to new secure admin path
+  if (pathname === "/admin" || pathname === "/admin/login") {
+    return NextResponse.redirect(new URL("/87564/admin/login", req.url));
   }
+  if (pathname.startsWith("/admin/")) {
+    const subPath = pathname.replace(/^\/admin/, "/87564/admin");
+    return NextResponse.redirect(new URL(subPath, req.url));
+  }
+
+  // Preflight OPTIONS handling for API routes
+  if (pathname.startsWith("/api/") && req.method === "OPTIONS") {
+    const headers = getCorsHeaders(origin);
+    return new NextResponse(null, { status: 204, headers });
+  }
+
+  // Helper to attach CORS headers to API responses
+  const applyCorsHeaders = (res: NextResponse) => {
+    if (pathname.startsWith("/api/")) {
+      const cors = getCorsHeaders(origin);
+      Object.entries(cors).forEach(([key, value]) => {
+        res.headers.set(key, value);
+      });
+    }
+    return res;
+  };
 
   // 1. API Route Protection
   if (pathname.startsWith("/api/admin")) {
@@ -110,25 +153,30 @@ export async function middleware(req: NextRequest) {
       pathname === "/api/admin/auth/login" ||
       pathname === "/api/admin/auth/refresh"
     ) {
-      return NextResponse.next();
+      return applyCorsHeaders(NextResponse.next());
     }
 
     const token = req.cookies.get("pmp_admin_access")?.value;
     if (!token) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+      return applyCorsHeaders(NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 }));
     }
 
     const payload = await getJwtPayload(token);
     if (!payload) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+      return applyCorsHeaders(NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 }));
     }
 
     const role = payload.role as AdminRole;
     if (!canAccessAdminApi(role, req.nextUrl.pathname + req.nextUrl.search, req.method)) {
-      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+      return applyCorsHeaders(NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 }));
     }
 
-    return NextResponse.next();
+    return applyCorsHeaders(NextResponse.next());
+  }
+
+  // Apply CORS to non-admin API routes
+  if (pathname.startsWith("/api/")) {
+    return applyCorsHeaders(NextResponse.next());
   }
 
   // 2. Admin UI Page Protection
@@ -161,5 +209,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/87564/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/87564/admin/:path*", "/api/:path*"],
 };

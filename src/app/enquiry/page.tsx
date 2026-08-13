@@ -17,19 +17,18 @@ import {
   ChevronRight, 
   ChevronLeft, 
   Clock, 
-  Paintbrush, 
   Building2, 
   User, 
   Mail, 
   Phone, 
-  ArrowRight, 
   Check, 
-  HelpCircle,
   Layers,
-  Coins
+  Coins,
+  MapPin
 } from "lucide-react";
 import { useShortlist } from "@/context/ShortlistContext";
 import { COMPANY_INFO } from "@/data/siteConfig";
+import { sendProductQuoteEmail } from "@/lib/emailjs";
 
 interface FormDataState {
   name: string;
@@ -39,9 +38,8 @@ interface FormDataState {
   quantity: string;
   budget: string;
   deliveryLocation: string;
-  serviceArea: string;
+  deliveryAddress: string;
   message: string;
-  brandingMethod: string;
   packagingChoice: string;
   deliveryTimeline: string;
   customProductsText: string;
@@ -71,9 +69,8 @@ function EnquiryFormContainer() {
     quantity: "",
     budget: "",
     deliveryLocation: "",
-    serviceArea: "",
+    deliveryAddress: "",
     message: "",
-    brandingMethod: "",
     packagingChoice: "",
     deliveryTimeline: "",
     customProductsText: "",
@@ -113,17 +110,17 @@ function EnquiryFormContainer() {
       if (!hasPreselectedItems && !formData.customProductsText.trim()) {
         return "Please specify the products you are interested in.";
       }
-    } else if (currentStep === 4) {
+    } else if (currentStep === 3) {
       if (!formData.quantity) {
         return "Please select an estimated quantity.";
       }
       if (!formData.deliveryLocation) {
-        return "Please select a delivery protocol/location.";
+        return "Please select a delivery protocol.";
       }
-      if (!formData.serviceArea) {
-        return "Please select your target service area.";
+      if (!formData.deliveryAddress.trim()) {
+        return "Please enter your complete delivery address.";
       }
-    } else if (currentStep === 5) {
+    } else if (currentStep === 4) {
       if (!formData.name.trim()) return "Name is required.";
       if (!formData.company.trim()) return "Company name is required.";
       if (!formData.email.trim()) return "Email is required.";
@@ -152,7 +149,7 @@ function EnquiryFormContainer() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const error = validateStep(5);
+    const error = validateStep(4);
     if (error) {
       setStepErrors(error);
       return;
@@ -168,15 +165,20 @@ function EnquiryFormContainer() {
       phone: formData.phone,
       quantity: formData.quantity,
       budget: formData.budget || "Not Specified",
-      deliveryLocation: `${formData.deliveryLocation} (Region: ${formData.serviceArea})`,
+      deliveryLocation: formData.deliveryLocation,
+      deliveryAddress: formData.deliveryAddress,
+      source: "Product Quote",
       shortlist: []
     };
+
+    let productNameString = "";
 
     if (isShortlistSource && items.length > 0) {
       finalPayload.shortlist = items.map(item => ({
         title: getShortlistItemDisplayName(item),
         price: item.price
       }));
+      productNameString = items.map(getShortlistItemDisplayName).join(", ");
     } else if (category || subcategory || brand) {
       const parts = [];
       if (brand) parts.push(`Brand: ${brand}`);
@@ -190,40 +192,59 @@ function EnquiryFormContainer() {
       }
       if (moq) parts.push(`MOQ: ${moq}`);
       finalPayload.shortlist = [{ title: parts.join(" | ") }];
+      productNameString = parts.join(" | ");
     } else if (singleProduct) {
       finalPayload.shortlist = [{ title: singleProduct }];
+      productNameString = singleProduct;
     } else if (formData.customProductsText) {
       finalPayload.shortlist = [{ title: formData.customProductsText }];
+      productNameString = formData.customProductsText;
     }
 
     let customMsg = formData.message || "";
     const extraDetails = [];
-    if (formData.brandingMethod) extraDetails.push(`Branding: ${formData.brandingMethod}`);
     if (formData.packagingChoice) extraDetails.push(`Packaging: ${formData.packagingChoice}`);
     if (formData.deliveryTimeline) extraDetails.push(`Timeline: ${formData.deliveryTimeline}`);
+    if (formData.deliveryAddress) extraDetails.push(`Address: ${formData.deliveryAddress}`);
     if (formData.customProductsText && ((isShortlistSource && items.length > 0) || singleProduct)) {
       extraDetails.push(`Additional request details: ${formData.customProductsText}`);
     }
 
     if (extraDetails.length > 0) {
-      finalPayload.message = `--- Luxury Custom Specifications ---\n${extraDetails.join("\n")}\n\n--- Customer Note ---\n${customMsg || "No custom message provided."}`;
+      finalPayload.message = `--- Custom Specifications ---\n${extraDetails.join("\n")}\n\n--- Customer Note ---\n${customMsg || "No custom message provided."}`;
     } else {
       finalPayload.message = customMsg || "No custom message provided.";
     }
 
     try {
-      const response = await fetch("/api/enquiry", {
+      // 1. Save to MongoDB
+      await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalPayload),
       });
 
-      const result = await response.json();
+      // 2. Send via EmailJS
+      const emailResult = await sendProductQuoteEmail({
+        customer_name: formData.name,
+        company_name: formData.company,
+        customer_email: formData.email,
+        phone: formData.phone,
+        product_name: productNameString || "Custom quote request",
+        category: category ? toDisplayName(getCanonicalCategoryName(category)) : "",
+        subcategory: subcategory ? toDisplayName(getCanonicalSubcategoryName(subcategory)) : "",
+        quantity: formData.quantity,
+        budget: formData.budget || "Not Specified",
+        packaging: formData.packagingChoice || "Standard Box",
+        delivery_address: formData.deliveryAddress,
+        delivery_timeline: formData.deliveryTimeline || "Standard",
+        requirements: formData.message || formData.customProductsText || "No custom message provided.",
+      });
 
-      if (result.success) {
+      if (emailResult.success) {
         setStatus("success");
       } else {
-        setErrorMessage(result.message || "Failed to submit enquiry. Please try again.");
+        setErrorMessage(emailResult.message || "Failed to submit enquiry. Please try again.");
         setStatus("error");
       }
     } catch (err: any) {
@@ -235,18 +256,9 @@ function EnquiryFormContainer() {
 
   const stepsList = [
     { number: 1, label: "Product Selection" },
-    { number: 2, label: "Branding Details" },
-    { number: 3, label: "Packaging" },
-    { number: 4, label: "Quantity & Budget" },
-    { number: 5, label: "Contact Details" }
-  ];
-
-  const brandingOptions = [
-    { id: "Laser Engraving", name: "Laser Engraving", desc: "Best for metal/wooden items" },
-    { id: "Screen Printing", name: "Screen Printing", desc: "Vibrant ink print for fabrics/diaries" },
-    { id: "Embroidery", name: "Premium Embroidery", desc: "Stitched thread for apparel & bags" },
-    { id: "Foil Stamping", name: "Gold/Silver Foil", desc: "Luxury metallic imprint for diaries & boxes" },
-    { id: "Not Sure", name: "Consult Expert", desc: "We'll suggest the best option" }
+    { number: 2, label: "Packaging" },
+    { number: 3, label: "Quote & Delivery" },
+    { number: 4, label: "Contact Details" }
   ];
 
   const packagingOptions = [
@@ -282,7 +294,7 @@ function EnquiryFormContainer() {
                 }`}>
                   {s.label}
                 </span>
-                {s.number < 5 && (
+                {s.number < 4 && (
                   <div className={`w-4 sm:w-8 h-0.5 mx-2 transition-colors duration-305 ${
                     step > s.number ? "bg-red-600" : "bg-gray-150"
                   }`} />
@@ -293,8 +305,8 @@ function EnquiryFormContainer() {
           <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
             <motion.div 
               className="bg-red-600 h-full"
-              initial={{ width: "20%" }}
-              animate={{ width: `${(step / 5) * 100}%` }}
+              initial={{ width: "25%" }}
+              animate={{ width: `${(step / 4) * 100}%` }}
               transition={{ duration: 0.3 }}
             />
           </div>
@@ -331,9 +343,8 @@ function EnquiryFormContainer() {
                       quantity: "",
                       budget: "",
                       deliveryLocation: "",
-                      serviceArea: "",
+                      deliveryAddress: "",
                       message: "",
-                      brandingMethod: "",
                       packagingChoice: "",
                       deliveryTimeline: "",
                       customProductsText: "",
@@ -439,43 +450,8 @@ function EnquiryFormContainer() {
                   </div>
                 )}
 
-                {/* STEP 2: BRANDING REQUIREMENTS */}
+                {/* STEP 2: PACKAGING REQUIREMENTS */}
                 {step === 2 && (
-                  <div className="space-y-6 text-left">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
-                        <Paintbrush className="w-5 h-5 text-red-500" />
-                        Branding Customization
-                      </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Select the preferred branding and logo placement method for items.</p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Branding Logo Method</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {brandingOptions.map(opt => (
-                          <button
-                            suppressHydrationWarning
-                            key={opt.id}
-                            type="button"
-                            onClick={() => selectOption("brandingMethod", opt.id)}
-                            className={`p-4 text-left border rounded-2xl transition-all cursor-pointer flex flex-col justify-between h-20 ${
-                              formData.brandingMethod === opt.id 
-                                ? "border-red-600 bg-red-50/20 text-gray-950 ring-1 ring-red-600 shadow-sm" 
-                                : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
-                            }`}
-                          >
-                            <span className="text-xs font-bold text-gray-900">{opt.name}</span>
-                            <span className="text-[10px] text-gray-400 block line-clamp-1">{opt.desc}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 3: PACKAGING REQUIREMENTS */}
-                {step === 3 && (
                   <div className="space-y-6 text-left">
                     <div>
                       <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
@@ -509,15 +485,15 @@ function EnquiryFormContainer() {
                   </div>
                 )}
 
-                {/* STEP 4: QUANTITY AND BUDGET */}
-                {step === 4 && (
+                {/* STEP 3: QUANTITY, BUDGET & DELIVERY ADDRESS */}
+                {step === 3 && (
                   <div className="space-y-6 text-left">
                     <div>
                       <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
                         <Coins className="w-5 h-5 text-red-500" />
-                        Volume, Budget & Timings
+                        Volume, Budget & Logistics
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Define your quantity guidelines, budget ranges, and logistics destinations.</p>
+                      <p className="text-xs text-gray-500 font-semibold">Define your quantity guidelines, budget ranges, and delivery destination.</p>
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -552,7 +528,7 @@ function EnquiryFormContainer() {
                           <option value="Under ₹500">Under ₹500</option>
                           <option value="₹500 - ₹1000">₹500 - ₹1,000</option>
                           <option value="₹1000 - ₹2500">₹1,005 - ₹2,500</option>
-                          <option value="Premium (₹2500+)">Premium (₹2,500+)</option>
+                          <option value="Premium (₹2500+) font-semibold">Premium (₹2,500+)</option>
                         </select>
                       </div>
                     </div>
@@ -593,32 +569,24 @@ function EnquiryFormContainer() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Service Area / Delivery Region *</label>
-                      <select 
+                      <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Delivery Address *</label>
+                      <textarea 
                         suppressHydrationWarning
-                        name="serviceArea"
-                        value={formData.serviceArea}
+                        name="deliveryAddress"
+                        value={formData.deliveryAddress}
                         onChange={handleInputChange}
                         required
-                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold"
-                      >
-                        <option value="">Select Service Area / Region</option>
-                        <option value="Delhi NCR">Delhi NCR</option>
-                        <option value="Maharashtra">Maharashtra (Mumbai, Pune, etc.)</option>
-                        <option value="Karnataka">Karnataka (Bangalore, etc.)</option>
-                        <option value="Telangana">Telangana (Hyderabad, etc.)</option>
-                        <option value="Tamil Nadu">Tamil Nadu (Chennai, etc.)</option>
-                        <option value="Gujarat">Gujarat</option>
-                        <option value="West Bengal">West Bengal</option>
-                        <option value="Other India State">Other State (Pan-India)</option>
-                        <option value="International">International</option>
-                      </select>
+                        rows={3}
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-none font-medium"
+                        placeholder="Enter your complete delivery address, city, state and PIN code"
+                      />
+                      <p className="text-[11px] text-gray-400 font-medium">e.g. OF-653, 6th Floor, Satya The Hive, Sector 102, Dwarka Expressway, Gurugram, Haryana - 122006</p>
                     </div>
                   </div>
                 )}
 
-                {/* STEP 5: CONTACT DETAILS */}
-                {step === 5 && (
+                {/* STEP 4: CONTACT DETAILS */}
+                {step === 4 && (
                   <div className="space-y-5 text-left">
                     <div>
                       <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
@@ -701,7 +669,7 @@ function EnquiryFormContainer() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider font-semibold">Special Requests / Branding Brief</label>
+                      <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider font-semibold">Special Requests / Gifting Brief</label>
                       <textarea 
                         suppressHydrationWarning
                         name="message" 
@@ -709,7 +677,7 @@ function EnquiryFormContainer() {
                         onChange={handleInputChange}
                         rows={3} 
                         className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-none font-medium" 
-                        placeholder="Tell us about the gifting event, customization demands, packaging color preferences, or other instructions..." 
+                        placeholder="Tell us about the gifting event, packaging preferences, or other instructions..." 
                       />
                     </div>
                   </div>
@@ -742,7 +710,7 @@ function EnquiryFormContainer() {
                 </button>
               )}
 
-              {step < 5 ? (
+              {step < 4 ? (
                 <button
                   suppressHydrationWarning
                   type="button"
@@ -825,20 +793,9 @@ function EnquiryFormContainer() {
               </div>
             </div>
 
-            {/* Branding Row */}
-            <div className="flex items-center gap-3">
-              <Paintbrush className="w-5 h-5 text-red-555 flex-shrink-0" />
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Logo Branding Curation</span>
-                <span className="text-sm font-semibold text-white">
-                  {formData.brandingMethod ? formData.brandingMethod : "None / Standard printing"}
-                </span>
-              </div>
-            </div>
-
             {/* Packaging Row */}
             <div className="flex items-center gap-3">
-              <HelpCircle className="w-5 h-5 text-red-555 flex-shrink-0" />
+              <Layers className="w-5 h-5 text-red-555 flex-shrink-0" />
               <div>
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Box Presentation Style</span>
                 <span className="text-sm font-semibold text-white">
@@ -847,14 +804,13 @@ function EnquiryFormContainer() {
               </div>
             </div>
 
-            {/* Destination Row */}
+            {/* Delivery Address Row */}
             <div className="flex items-start gap-3">
-              <Building2 className="w-5 h-5 text-red-555 flex-shrink-0 mt-0.5" />
+              <MapPin className="w-5 h-5 text-red-555 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Delivery Logistics</span>
-                <span className="text-sm font-semibold text-white">
-                  {formData.deliveryLocation ? formData.deliveryLocation : "Select protocol in Step 4"} 
-                  {formData.deliveryTimeline ? ` (${formData.deliveryTimeline} timeline)` : ""}
+                <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Delivery Address</span>
+                <span className="text-sm font-semibold text-white whitespace-pre-line">
+                  {formData.deliveryAddress.trim() ? formData.deliveryAddress : "Delivery address not provided"}
                 </span>
               </div>
             </div>
@@ -903,7 +859,7 @@ export default function EnquiryPage() {
         <div className="text-center mb-10">
           <SectionHeading 
             title="Premium Request Curation"
-            subtitle="Describe your occasion, branding standards, and quantity guidelines. Our packaging and gifting specialists will compile custom mockups and quote sheets." 
+            subtitle="Describe your occasion, packaging standards, and quantity guidelines. Our packaging and gifting specialists will compile custom mockups and quote sheets." 
             centered 
             className="mb-0"
           />
