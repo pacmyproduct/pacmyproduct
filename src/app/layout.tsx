@@ -11,6 +11,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PacMyProduct | Premium Branded Corporate Gifting & Custom Packaging",
   description: "India's premier B2B partner for custom corporate gifting, curated employee welcome kits, and luxury packaging solutions. Nationwide shipping and custom logo branding studio.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
