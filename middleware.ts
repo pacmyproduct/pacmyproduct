@@ -12,20 +12,19 @@ const envOrigins = [
   .filter(Boolean);
 
 const defaultOrigins = [
+  "https://pacmyproduct.com",
+  "https://www.pacmyproduct.com",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
 
 const allowedOrigins = Array.from(
-  new Set([
-    ...envOrigins,
-    ...(process.env.NODE_ENV !== "production" || envOrigins.length === 0 ? defaultOrigins : []),
-  ])
+  new Set([...defaultOrigins, ...envOrigins])
 );
 
 function getCorsHeaders(origin: string | null) {
   const isAllowed = origin && allowedOrigins.includes(origin);
-  const allowedOrigin = isAllowed ? origin : allowedOrigins[0];
+  const allowedOrigin = isAllowed ? origin : "https://pacmyproduct.com";
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Credentials": "true",
@@ -133,6 +132,21 @@ const canAccessAdminPage = (role: string, pathname: string) => {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // 0. Static assets & Next.js internal paths - NEVER intercept, reject, or apply CORS
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.startsWith("/logo.png") ||
+    pathname.startsWith("/images") ||
+    pathname.startsWith("/kitsimages") ||
+    pathname.startsWith("/logos") ||
+    pathname.startsWith("/public") ||
+    /\.(.*)$/.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
+
   const origin = req.headers.get("origin");
 
   // Redirect legacy /admin paths to new secure admin path
@@ -144,10 +158,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(subPath, req.url));
   }
 
-  // Preflight OPTIONS handling for API routes
-  if (pathname.startsWith("/api/") && req.method === "OPTIONS") {
-    const headers = getCorsHeaders(origin);
-    return new NextResponse(null, { status: 204, headers });
+  // Preflight OPTIONS handling ONLY for API routes
+  if (pathname.startsWith("/api/")) {
+    if (req.method === "OPTIONS") {
+      const headers = getCorsHeaders(origin);
+      return new NextResponse(null, { status: 204, headers });
+    }
   }
 
   // Helper to attach CORS headers to API responses
@@ -223,5 +239,9 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/87564/admin/:path*", "/api/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/87564/admin/:path*",
+    "/api/:path*",
+  ],
 };
