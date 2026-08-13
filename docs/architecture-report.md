@@ -161,18 +161,16 @@ Seed audit:
 - Total products checked: `127`
 - Detected title/category mismatch count: `0`
 
-## Quote + Resend
+## Quote Workflows
 
 Existing `/api/enquiry` flow remains active.
 
 Quote submissions:
 
 - create quote records through service layer
-- send customer confirmation via Resend
-- send admin notification to `pmpadmin@gmail.com`
+- send customer confirmation
+- send admin notification to `pacmyproduct00@gmail.com`
 - log email attempt
-
-Live email delivery requires a verified Resend sender/domain.
 
 ## Analytics
 

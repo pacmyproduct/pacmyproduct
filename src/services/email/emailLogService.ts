@@ -26,7 +26,7 @@ export async function logEmail(input: {
     await connectMongoDB();
     const log = await EmailLogModel.create({
       ...input,
-      provider: input.providerMessageId ? "resend" : "system",
+      provider: "system",
       sentAt: input.status === "SENT" ? new Date() : undefined,
     });
     return mapEmailLog(log.toObject());
