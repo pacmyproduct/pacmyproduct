@@ -1,13 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()).filter(Boolean)
-  : [
-      "https://pacmyproduct.com",
-      "https://www.pacmyproduct.com",
-      "http://localhost:3000",
-      "http://localhost:3001",
-    ];
+const envOrigins = [
+  process.env.ALLOWED_ORIGINS,
+  process.env.NEXT_PUBLIC_APP_URL,
+  process.env.APP_URL,
+  process.env.NEXT_PUBLIC_SITE_URL,
+]
+  .filter((val): val is string => Boolean(val))
+  .flatMap((val) => val.split(","))
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const defaultOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+const allowedOrigins = Array.from(
+  new Set([
+    ...envOrigins,
+    ...(process.env.NODE_ENV !== "production" || envOrigins.length === 0 ? defaultOrigins : []),
+  ])
+);
 
 function getCorsHeaders(origin: string | null) {
   const isAllowed = origin && allowedOrigins.includes(origin);
