@@ -216,7 +216,7 @@ Added Cloudinary configuration:
 
 - `src/lib/cloudinary.ts`
 
-Added Vercel-compatible memory upload endpoint:
+Added serverless-compatible memory upload endpoint:
 
 - `POST /api/admin/upload`
 

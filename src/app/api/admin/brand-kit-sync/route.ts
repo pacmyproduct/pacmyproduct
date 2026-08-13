@@ -124,7 +124,7 @@ const slugify = (value: string) =>
     .replace(/(^-|-$)/g, "");
 
 // Lightweight image resolver that replicates frontend matching conventions
-// without importing generatedImageMap or filesystems, resolving Vercel deployment limits.
+// without importing generatedImageMap or filesystems, resolving deployment limits.
 const getSyncDefaultImage = (name: string): string => {
   const clean = name.toLowerCase().replace(/[^a-z0-9]/g, "");
   

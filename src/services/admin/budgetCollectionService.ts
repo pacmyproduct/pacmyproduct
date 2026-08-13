@@ -122,7 +122,7 @@ async function writeToDiskFileBestEffort(data: BudgetConfigItem[]): Promise<void
     await fs.mkdir(RUNTIME_DIR, { recursive: true });
     await fs.writeFile(BUDGETS_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (err: any) {
-    // On Vercel (read-only filesystem EROFS), ignore file write failures
+    // On read-only filesystem (EROFS), ignore file write failures
     console.warn("[Budget CRUD] File write skipped or non-fatal error:", err?.message || err);
   }
 }
@@ -224,7 +224,7 @@ export async function saveBudgetsConfigService(data: BudgetConfigItem[]): Promis
 
       console.log("[Budget CRUD] Successfully updated budget collections in MongoDB.", { count: sortedData.length });
 
-      // Best effort file sync for local dev (ignored silently on Vercel EROFS)
+      // Best effort file sync for local dev (ignored silently on read-only EROFS)
       await writeToDiskFileBestEffort(sortedData);
 
       return { success: true };
