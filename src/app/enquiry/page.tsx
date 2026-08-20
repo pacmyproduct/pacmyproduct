@@ -276,7 +276,7 @@ function EnquiryFormContainer() {
       <div className="lg:col-span-3 p-4 sm:p-6 md:p-10 flex flex-col justify-between relative bg-white w-full min-w-0 max-w-full">
         
         {/* Progress Bar & Indicators */}
-        <div className="mb-6 sm:mb-8 w-full min-w-0">
+        <div className="mb-6 sm:mb-8 w-full min-w-0 overflow-hidden">
           <div className="w-full min-w-0 overflow-x-auto no-scrollbar pb-2 mb-2 sm:mb-4">
             <div className="flex items-center justify-between min-w-max gap-1 sm:gap-2 px-0.5">
               {stepsList.map((s) => (
@@ -315,7 +315,7 @@ function EnquiryFormContainer() {
         </div>
 
         {/* Step Content */}
-        <div className="flex-grow flex flex-col justify-center w-full min-w-0">
+        <div className="flex-grow flex flex-col justify-center w-full min-w-0 overflow-hidden">
           <AnimatePresence mode="wait">
             {status === "success" ? (
               <motion.div 
@@ -360,22 +360,21 @@ function EnquiryFormContainer() {
             ) : (
               <motion.div
                 key={step}
-                custom={direction}
-                initial={{ opacity: 0, x: direction * 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -40 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="space-y-5 sm:space-y-6 py-2 w-full min-w-0"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="space-y-5 sm:space-y-6 py-2 w-full min-w-0 max-w-full"
               >
                 {/* STEP 1: PRODUCT SELECTION */}
                 {step === 1 && (
-                  <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
-                    <div className="w-full min-w-0">
-                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                  <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0 max-w-full">
+                    <div className="w-full min-w-0 max-w-full">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words [overflow-wrap:anywhere] max-w-full min-w-0">
                         <Package className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <span>Select Gifting Swag / Box Items</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold break-words">Review preselected items or describe custom items you need produced.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words [overflow-wrap:anywhere] max-w-full min-w-0">Review preselected items or describe custom items you need produced.</p>
                     </div>
 
                     {((isShortlistSource && items.length > 0) || singleProduct || category || subcategory || brand) ? (
@@ -456,11 +455,11 @@ function EnquiryFormContainer() {
                 {step === 2 && (
                   <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
                     <div className="w-full min-w-0">
-                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words [overflow-wrap:anywhere]">
                         <Layers className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <span>Packaging Customization</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold break-words">Choose the presentation box style for your custom gifts.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words [overflow-wrap:anywhere]">Choose the presentation box style for your custom gifts.</p>
                     </div>
 
                     <div className="space-y-2 w-full min-w-0">
@@ -491,11 +490,11 @@ function EnquiryFormContainer() {
                 {step === 3 && (
                   <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
                     <div className="w-full min-w-0">
-                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words [overflow-wrap:anywhere]">
                         <Coins className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <span>Volume, Budget & Logistics</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold break-words">Define your quantity guidelines, budget ranges, and delivery destination.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words [overflow-wrap:anywhere]">Define your quantity guidelines, budget ranges, and delivery destination.</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
@@ -591,11 +590,11 @@ function EnquiryFormContainer() {
                 {step === 4 && (
                   <div className="space-y-5 text-left w-full min-w-0">
                     <div className="w-full min-w-0">
-                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words [overflow-wrap:anywhere]">
                         <Building2 className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <span>Company & Contact Details</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold break-words">Enter your work details to finalize custom quote sheets.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words [overflow-wrap:anywhere]">Enter your work details to finalize custom quote sheets.</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
@@ -746,7 +745,7 @@ function EnquiryFormContainer() {
       </div>
 
       {/* RIGHT SIDE: Real-Time Dynamic Summary Panel */}
-      <div className="lg:col-span-2 p-5 sm:p-8 md:p-10 text-white flex flex-col justify-between relative luxury-gradient border-t lg:border-t-0 lg:border-l border-white/10 w-full min-w-0 max-w-full">
+      <div className="lg:col-span-2 p-5 sm:p-8 md:p-10 text-white flex flex-col justify-between relative luxury-gradient border-t lg:border-t-0 lg:border-l border-white/10 w-full min-w-0 max-w-full h-auto min-h-0">
         <div className="space-y-6 sm:space-y-8 w-full min-w-0">
           <div>
             <h3 className="text-lg sm:text-xl font-black mb-1 tracking-wide uppercase text-red-500 break-words">Live Quote Summary</h3>
@@ -854,7 +853,7 @@ function EnquiryFormContainer() {
 
 export default function EnquiryPage() {
   return (
-    <div className="pt-24 sm:pt-28 pb-16 sm:pb-24 bg-gray-50 min-h-screen relative w-full max-w-full overflow-hidden">
+    <div className="pt-6 sm:pt-12 pb-20 sm:pb-24 bg-gray-50 min-h-screen relative w-full max-w-full min-w-0 overflow-hidden">
       <BackgroundGradient />
       
       <div className="max-w-6xl mx-auto px-3.5 sm:px-6 relative z-10 w-full min-w-0">

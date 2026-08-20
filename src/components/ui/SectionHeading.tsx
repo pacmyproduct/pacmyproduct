@@ -26,10 +26,10 @@ export function SectionHeading({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.65, ease: EASE_SMOOTH }}
-      className={cn("mb-16", centered && "text-center", className)}
+      className={cn("mb-12 sm:mb-16 w-full max-w-full min-w-0", centered && "text-center", className)}
       {...(props as any)}
     >
-      <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#2B2B2B]">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#2B2B2B] break-words [overflow-wrap:anywhere] max-w-full min-w-0">
         {title}
       </h2>
 
@@ -53,7 +53,7 @@ export function SectionHeading({
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.55, delay: 0.2, ease: EASE_SMOOTH }}
           className={cn(
-            "text-[#6B6B63] text-base md:text-lg mt-5 leading-relaxed",
+            "text-[#6B6B63] text-xs sm:text-base md:text-lg mt-3 sm:mt-5 leading-relaxed break-words [overflow-wrap:anywhere] w-full min-w-0",
             centered && "mx-auto max-w-2xl"
           )}
         >

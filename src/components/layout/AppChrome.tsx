@@ -33,7 +33,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         <ProductPreviewProvider>
           <ScrollProgressBar />
           <Navbar />
-        <main className="flex-1 flex flex-col pt-[80px] lg:pt-[90px]">
+        <main className="flex-1 flex flex-col pt-[80px] lg:pt-[90px] w-full max-w-full min-w-0 overflow-x-clip">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={pathname}
@@ -41,7 +41,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="flex-1 flex flex-col"
+              className="flex-1 flex flex-col w-full max-w-full min-w-0"
             >
               {children}
             </motion.div>
