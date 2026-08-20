@@ -270,37 +270,39 @@ function EnquiryFormContainer() {
   ];
 
   return (
-    <div className="grid lg:grid-cols-5 gap-0 bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-2xl min-h-[680px]">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden shadow-2xl w-full max-w-full min-w-0 min-h-0 lg:min-h-[680px]">
       
       {/* LEFT SIDE: Wizard Form */}
-      <div className="lg:col-span-3 p-6 md:p-10 flex flex-col justify-between relative bg-white">
+      <div className="lg:col-span-3 p-4 sm:p-6 md:p-10 flex flex-col justify-between relative bg-white w-full min-w-0 max-w-full">
         
         {/* Progress Bar & Indicators */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4 overflow-x-auto no-scrollbar pb-2">
-            {stepsList.map((s) => (
-              <div key={s.number} className="flex items-center flex-shrink-0">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${
-                  step > s.number 
-                    ? "bg-red-650 text-white" 
-                    : step === s.number 
-                      ? "bg-gray-900 text-white ring-4 ring-gray-900/10" 
-                      : "bg-gray-100 text-gray-450"
-                }`}>
-                  {step > s.number ? <Check className="w-4 h-4" /> : s.number}
+        <div className="mb-6 sm:mb-8 w-full min-w-0">
+          <div className="w-full min-w-0 overflow-x-auto no-scrollbar pb-2 mb-2 sm:mb-4">
+            <div className="flex items-center justify-between min-w-max gap-1 sm:gap-2 px-0.5">
+              {stepsList.map((s) => (
+                <div key={s.number} className="flex items-center flex-shrink-0">
+                  <div className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full font-bold text-xs sm:text-sm transition-all duration-300 ${
+                    step > s.number 
+                      ? "bg-red-650 text-white" 
+                      : step === s.number 
+                        ? "bg-gray-900 text-white ring-4 ring-gray-900/10" 
+                        : "bg-gray-100 text-gray-450"
+                  }`}>
+                    {step > s.number ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : s.number}
+                  </div>
+                  <span className={`ml-1.5 sm:ml-2 text-[11px] sm:text-xs font-bold whitespace-nowrap ${
+                    step === s.number ? "text-gray-905" : "text-gray-400"
+                  }`}>
+                    {s.label}
+                  </span>
+                  {s.number < 4 && (
+                    <div className={`w-3 sm:w-8 h-0.5 mx-1.5 sm:mx-2 transition-colors duration-305 ${
+                      step > s.number ? "bg-red-600" : "bg-gray-150"
+                    }`} />
+                  )}
                 </div>
-                <span className={`ml-2 text-xs font-bold whitespace-nowrap ${
-                  step === s.number ? "text-gray-905" : "text-gray-400"
-                }`}>
-                  {s.label}
-                </span>
-                {s.number < 4 && (
-                  <div className={`w-4 sm:w-8 h-0.5 mx-2 transition-colors duration-305 ${
-                    step > s.number ? "bg-red-600" : "bg-gray-150"
-                  }`} />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
             <motion.div 
@@ -313,7 +315,7 @@ function EnquiryFormContainer() {
         </div>
 
         {/* Step Content */}
-        <div className="flex-grow flex flex-col justify-center">
+        <div className="flex-grow flex flex-col justify-center w-full min-w-0">
           <AnimatePresence mode="wait">
             {status === "success" ? (
               <motion.div 
@@ -321,13 +323,13 @@ function EnquiryFormContainer() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex flex-col items-center justify-center text-center py-10"
+                className="flex flex-col items-center justify-center text-center py-8 sm:py-10 px-2 sm:px-4 w-full min-w-0 max-w-full"
               >
-                <div className="w-24 h-24 bg-red-50 text-red-650 rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce">
-                  <CheckCircle2 className="w-12 h-12" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-red-50 text-red-650 rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce">
+                  <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 mb-3">Enquiry Submitted!</h3>
-                <p className="text-gray-500 text-xs sm:text-sm max-w-md mb-8 leading-relaxed font-semibold">
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-3 break-words">Enquiry Submitted!</h3>
+                <p className="text-gray-500 text-xs sm:text-sm max-w-md mb-8 leading-relaxed font-semibold px-2 break-words">
                   Thank you for sharing your project specifications. Our corporate gifting and packaging curation team will review the details and reach out within 2-4 business hours.
                 </p>
                 <Button 
@@ -350,7 +352,7 @@ function EnquiryFormContainer() {
                       customProductsText: "",
                     });
                   }}
-                  className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 border-0 text-white px-8"
+                  className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 border-0 text-white px-8"
                 >
                   Request Another Quote
                 </Button>
@@ -363,63 +365,63 @@ function EnquiryFormContainer() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: direction * -40 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="space-y-6 py-2"
+                className="space-y-5 sm:space-y-6 py-2 w-full min-w-0"
               >
                 {/* STEP 1: PRODUCT SELECTION */}
                 {step === 1 && (
-                  <div className="space-y-6 text-left">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
-                        <Package className="w-5 h-5 text-red-500" />
-                        Select Gifting Swag / Box Items
+                  <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
+                    <div className="w-full min-w-0">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                        <Package className="w-5 h-5 text-red-500 flex-shrink-0" />
+                        <span>Select Gifting Swag / Box Items</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Review preselected items or describe custom items you need produced.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words">Review preselected items or describe custom items you need produced.</p>
                     </div>
 
                     {((isShortlistSource && items.length > 0) || singleProduct || category || subcategory || brand) ? (
-                      <div className="bg-red-50/40 border border-red-100 rounded-2xl p-5">
+                      <div className="bg-red-50/40 border border-red-100 rounded-2xl p-4 sm:p-5 w-full min-w-0 max-w-full">
                         <div className="flex items-center gap-2 mb-3">
-                          <Check className="w-4 h-4 text-red-600" />
+                          <Check className="w-4 h-4 text-red-600 flex-shrink-0" />
                           <span className="text-xs font-bold text-red-700">Preselected Gifting Items:</span>
                         </div>
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-4 w-full min-w-0">
                           {isShortlistSource && items.length > 0 ? (
                             items.map(item => (
-                              <span key={item.title} className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                              <span key={item.title} className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words [overflow-wrap:anywhere] max-w-full">
                                 {getShortlistItemDisplayName(item)}
                               </span>
                             ))
                           ) : (
                             <>
                               {singleProduct && !singleProduct.startsWith("PacMyProduct") && (
-                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words [overflow-wrap:anywhere] max-w-full">
                                   {cleanProductTitle(singleProduct)}
                                 </span>
                               )}
                               {category && (
-                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words [overflow-wrap:anywhere] max-w-full">
                                   Category: {toDisplayName(getCanonicalCategoryName(category))}
                                 </span>
                               )}
                               {subcategory && (
-                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words [overflow-wrap:anywhere] max-w-full">
                                   Subcategory: {toDisplayName(getCanonicalSubcategoryName(subcategory))}
                                 </span>
                               )}
                               {brand && (
-                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words [overflow-wrap:anywhere] max-w-full">
                                   Brand: {brand}
                                 </span>
                               )}
                               {moq && (
-                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs">
+                                <span className="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-gray-800 border border-gray-200 shadow-xs break-words max-w-full">
                                   MOQ: {moq} Units
                                 </span>
                               )}
                             </>
                           )}
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 w-full min-w-0">
                           <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Add specific requirements or details:</label>
                           <textarea 
                             suppressHydrationWarning
@@ -427,13 +429,13 @@ function EnquiryFormContainer() {
                             value={formData.customProductsText}
                             onChange={handleInputChange}
                             rows={3}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all resize-none font-semibold"
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all resize-y min-h-[90px] font-semibold min-w-0 box-border max-w-full"
                             placeholder="Add sizing requirements, color options, or custom items..."
                           />
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="space-y-2 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Which products are you planning? *</label>
                         <textarea
                           suppressHydrationWarning
@@ -442,7 +444,7 @@ function EnquiryFormContainer() {
                           onChange={handleInputChange}
                           rows={5}
                           required
-                          className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-none font-medium"
+                          className="w-full bg-white border border-gray-200 rounded-2xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-y min-h-[120px] font-medium min-w-0 box-border max-w-full"
                           placeholder="e.g. 100 Employee Welcome Onboarding Kits featuring diaries, metallic executive pens, bottles, and canvas tote bags."
                         />
                       </div>
@@ -452,32 +454,32 @@ function EnquiryFormContainer() {
 
                 {/* STEP 2: PACKAGING REQUIREMENTS */}
                 {step === 2 && (
-                  <div className="space-y-6 text-left">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
-                        <Layers className="w-5 h-5 text-red-500" />
-                        Packaging Customization
+                  <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
+                    <div className="w-full min-w-0">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                        <Layers className="w-5 h-5 text-red-500 flex-shrink-0" />
+                        <span>Packaging Customization</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Choose the presentation box style for your custom gifts.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words">Choose the presentation box style for your custom gifts.</p>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-full min-w-0">
                       <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Packaging Box Type</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full min-w-0">
                         {packagingOptions.map(opt => (
                           <button
                             suppressHydrationWarning
                             key={opt.id}
                             type="button"
                             onClick={() => selectOption("packagingChoice", opt.id)}
-                            className={`p-4 text-left border rounded-2xl transition-all cursor-pointer flex flex-col justify-between h-20 ${
+                            className={`p-3.5 sm:p-4 text-left border rounded-2xl transition-all cursor-pointer flex flex-col justify-between h-auto min-h-[5rem] w-full min-w-0 box-border ${
                               formData.packagingChoice === opt.id 
                                 ? "border-red-600 bg-red-50/20 text-gray-950 ring-1 ring-red-600 shadow-sm" 
                                 : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
                             }`}
                           >
-                            <span className="text-xs font-bold text-gray-900">{opt.name}</span>
-                            <span className="text-[10px] text-gray-400 block line-clamp-1">{opt.desc}</span>
+                            <span className="text-xs font-bold text-gray-900 break-words block">{opt.name}</span>
+                            <span className="text-[10px] text-gray-400 block line-clamp-2 mt-1 break-words">{opt.desc}</span>
                           </button>
                         ))}
                       </div>
@@ -487,17 +489,17 @@ function EnquiryFormContainer() {
 
                 {/* STEP 3: QUANTITY, BUDGET & DELIVERY ADDRESS */}
                 {step === 3 && (
-                  <div className="space-y-6 text-left">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
-                        <Coins className="w-5 h-5 text-red-500" />
-                        Volume, Budget & Logistics
+                  <div className="space-y-5 sm:space-y-6 text-left w-full min-w-0">
+                    <div className="w-full min-w-0">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                        <Coins className="w-5 h-5 text-red-500 flex-shrink-0" />
+                        <span>Volume, Budget & Logistics</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Define your quantity guidelines, budget ranges, and delivery destination.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words">Define your quantity guidelines, budget ranges, and delivery destination.</p>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
+                      <div className="space-y-2 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Estimated Quantity *</label>
                         <select 
                           suppressHydrationWarning
@@ -505,7 +507,7 @@ function EnquiryFormContainer() {
                           value={formData.quantity}
                           onChange={handleInputChange}
                           required
-                          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold"
+                          className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold min-w-0 box-border max-w-full"
                         >
                           <option value="">Select Quantity Range</option>
                           <option value="50 - 100">50 - 100 units</option>
@@ -515,14 +517,14 @@ function EnquiryFormContainer() {
                         </select>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Budget Per Gift (Box)</label>
                         <select 
                           suppressHydrationWarning
                           name="budget"
                           value={formData.budget}
                           onChange={handleInputChange}
-                          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold"
+                          className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold min-w-0 box-border max-w-full"
                         >
                           <option value="">Select Budget Target</option>
                           <option value="Under ₹500">Under ₹500</option>
@@ -533,8 +535,8 @@ function EnquiryFormContainer() {
                       </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
+                      <div className="space-y-2 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Delivery protocol *</label>
                         <select 
                           suppressHydrationWarning
@@ -542,7 +544,7 @@ function EnquiryFormContainer() {
                           value={formData.deliveryLocation}
                           onChange={handleInputChange}
                           required
-                          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold"
+                          className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold min-w-0 box-border max-w-full"
                         >
                           <option value="">Select Delivery Method</option>
                           <option value="Single Location">Single Office Location (Bulk)</option>
@@ -551,14 +553,14 @@ function EnquiryFormContainer() {
                         </select>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Required Delivery Timeline</label>
                         <select 
                           suppressHydrationWarning
                           name="deliveryTimeline"
                           value={formData.deliveryTimeline}
                           onChange={handleInputChange}
-                          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold"
+                          className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer font-semibold min-w-0 box-border max-w-full"
                         >
                           <option value="">Select Timeline Target</option>
                           <option value="Urgent">Urgent (under 7 business days)</option>
@@ -568,7 +570,7 @@ function EnquiryFormContainer() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-full min-w-0">
                       <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Delivery Address *</label>
                       <textarea 
                         suppressHydrationWarning
@@ -577,29 +579,29 @@ function EnquiryFormContainer() {
                         onChange={handleInputChange}
                         required
                         rows={3}
-                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-none font-medium"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-y min-h-[120px] font-medium min-w-0 box-border max-w-full"
                         placeholder="Enter your complete delivery address, city, state and PIN code"
                       />
-                      <p className="text-[11px] text-gray-400 font-medium">e.g. OF-653, 6th Floor, Satya The Hive, Sector 102, Dwarka Expressway, Gurugram, Haryana - 122006</p>
+                      <p className="text-[11px] text-gray-400 font-medium break-words">e.g. OF-653, 6th Floor, Satya The Hive, Sector 102, Dwarka Expressway, Gurugram, Haryana - 122006</p>
                     </div>
                   </div>
                 )}
 
                 {/* STEP 4: CONTACT DETAILS */}
                 {step === 4 && (
-                  <div className="space-y-5 text-left">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-red-500" />
-                        Company & Contact Details
+                  <div className="space-y-5 text-left w-full min-w-0">
+                    <div className="w-full min-w-0">
+                      <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words">
+                        <Building2 className="w-5 h-5 text-red-500 flex-shrink-0" />
+                        <span>Company & Contact Details</span>
                       </h3>
-                      <p className="text-xs text-gray-500 font-semibold">Enter your work details to finalize custom quote sheets.</p>
+                      <p className="text-xs text-gray-500 font-semibold break-words">Enter your work details to finalize custom quote sheets.</p>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
+                      <div className="space-y-1 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Contact Name *</label>
-                        <div className="relative">
+                        <div className="relative w-full min-w-0">
                           <User className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
                           <input 
                             suppressHydrationWarning
@@ -608,15 +610,15 @@ function EnquiryFormContainer() {
                             type="text" 
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium" 
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium min-w-0 box-border max-w-full" 
                             placeholder="Your Name" 
                           />
                         </div>
                       </div>
 
-                      <div className="space-y-1">
+                      <div className="space-y-1 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Company Name *</label>
-                        <div className="relative">
+                        <div className="relative w-full min-w-0">
                           <Building2 className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
                           <input 
                             suppressHydrationWarning
@@ -625,17 +627,17 @@ function EnquiryFormContainer() {
                             type="text" 
                             value={formData.company}
                             onChange={handleInputChange}
-                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium" 
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium min-w-0 box-border max-w-full" 
                             placeholder="Company Name" 
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full min-w-0">
+                      <div className="space-y-1 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Work Email *</label>
-                        <div className="relative">
+                        <div className="relative w-full min-w-0">
                           <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
                           <input 
                             suppressHydrationWarning
@@ -644,15 +646,15 @@ function EnquiryFormContainer() {
                             type="email" 
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium" 
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium min-w-0 box-border max-w-full" 
                             placeholder="email@company.com" 
                           />
                         </div>
                       </div>
 
-                      <div className="space-y-1">
+                      <div className="space-y-1 w-full min-w-0">
                         <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider">Phone / Mobile *</label>
-                        <div className="relative">
+                        <div className="relative w-full min-w-0">
                           <Phone className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
                           <input 
                             suppressHydrationWarning
@@ -661,14 +663,14 @@ function EnquiryFormContainer() {
                             type="tel" 
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium" 
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium min-w-0 box-border max-w-full" 
                             placeholder="+91 00000 00000" 
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-1">
+                    <div className="space-y-1 w-full min-w-0">
                       <label className="text-xs font-bold text-gray-700 block uppercase tracking-wider font-semibold">Special Requests / Gifting Brief</label>
                       <textarea 
                         suppressHydrationWarning
@@ -676,7 +678,7 @@ function EnquiryFormContainer() {
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={3} 
-                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-none font-medium" 
+                        className="w-full bg-white border border-gray-200 rounded-xl px-3.5 sm:px-4 py-3 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all resize-y min-h-[90px] font-medium min-w-0 box-border max-w-full" 
                         placeholder="Tell us about the gifting event, packaging preferences, or other instructions..." 
                       />
                     </div>
@@ -689,22 +691,22 @@ function EnquiryFormContainer() {
 
         {/* Action Buttons */}
         {status !== "success" && (
-          <div className="mt-8 border-t border-gray-150 pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="mt-6 sm:mt-8 border-t border-gray-150 pt-5 sm:pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full min-w-0">
             <div>
               {stepErrors && (
-                <p className="text-xs text-red-650 font-bold flex items-center gap-1.5 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 mb-2 sm:mb-0">
+                <p className="text-xs text-red-650 font-bold flex items-start sm:items-center gap-1.5 bg-red-50 px-3 py-2 rounded-lg border border-red-100 mb-2 sm:mb-0 break-words">
                   <span>⚠</span> {stepErrors}
                 </p>
               )}
             </div>
 
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex items-center gap-2.5 sm:gap-3 w-full sm:w-auto justify-end ml-auto">
               {step > 1 && (
                 <button
                   suppressHydrationWarning
                   type="button"
                   onClick={prevStep}
-                  className="px-5 py-3 border border-gray-200 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center gap-1.5 transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-4 sm:px-5 py-3 border border-gray-200 text-gray-700 rounded-xl font-bold text-xs sm:text-sm hover:bg-gray-50 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back
                 </button>
@@ -715,7 +717,7 @@ function EnquiryFormContainer() {
                   suppressHydrationWarning
                   type="button"
                   onClick={nextStep}
-                  className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 flex items-center gap-1.5 transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-5 sm:px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-xs sm:text-sm hover:bg-gray-800 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                 >
                   Continue <ChevronRight className="w-4 h-4" />
                 </button>
@@ -724,7 +726,7 @@ function EnquiryFormContainer() {
                   variant="default"
                   onClick={handleSubmit}
                   disabled={status === "submitting"}
-                  className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white px-7 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-red-600/20 border-0"
+                  className="w-full sm:w-auto px-6 sm:px-7 py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-red-600/20 border-0"
                 >
                   {status === "submitting" ? (
                     <>
@@ -744,21 +746,21 @@ function EnquiryFormContainer() {
       </div>
 
       {/* RIGHT SIDE: Real-Time Dynamic Summary Panel */}
-      <div className="lg:col-span-2 p-8 md:p-10 text-white flex flex-col justify-between relative luxury-gradient border-l border-white/10">
-        <div className="space-y-8">
+      <div className="lg:col-span-2 p-5 sm:p-8 md:p-10 text-white flex flex-col justify-between relative luxury-gradient border-t lg:border-t-0 lg:border-l border-white/10 w-full min-w-0 max-w-full">
+        <div className="space-y-6 sm:space-y-8 w-full min-w-0">
           <div>
-            <h3 className="text-xl font-black mb-1 tracking-wide uppercase text-red-500">Live Quote Summary</h3>
-            <p className="text-xs text-gray-400">Review your customized requirements as they are selected.</p>
+            <h3 className="text-lg sm:text-xl font-black mb-1 tracking-wide uppercase text-red-500 break-words">Live Quote Summary</h3>
+            <p className="text-xs text-gray-400 break-words">Review your customized requirements as they are selected.</p>
           </div>
 
-          <div className="space-y-4 border-y border-white/10 py-6 text-left">
+          <div className="space-y-4 border-y border-white/10 py-5 sm:py-6 text-left w-full min-w-0">
             {/* Products Row */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 w-full min-w-0">
               <Package className="w-5 h-5 text-red-550 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Gifts / Kits Requested</span>
                 {((isShortlistSource && items.length > 0) || singleProduct || category || subcategory || brand) ? (
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-xs sm:text-sm font-semibold text-white break-words [overflow-wrap:anywhere] block">
                     {isShortlistSource && items.length > 0 
                       ? `${items.length} item(s) selected from shortlist` 
                       : singleProduct
@@ -774,7 +776,7 @@ function EnquiryFormContainer() {
                     }
                   </span>
                 ) : (
-                  <span className="text-sm text-gray-300 italic font-semibold">
+                  <span className="text-xs sm:text-sm text-gray-300 italic font-semibold break-words [overflow-wrap:anywhere] block">
                     {formData.customProductsText ? formData.customProductsText : "None selected yet"}
                   </span>
                 )}
@@ -782,11 +784,11 @@ function EnquiryFormContainer() {
             </div>
 
             {/* Scope Row */}
-            <div className="flex items-center gap-3">
-              <Clock className="w-5 h-5 text-red-555 flex-shrink-0" />
-              <div>
+            <div className="flex items-start gap-3 w-full min-w-0">
+              <Clock className="w-5 h-5 text-red-555 flex-shrink-0 mt-0.5" />
+              <div className="min-w-0 flex-1">
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Volume & Target Budget</span>
-                <span className="text-sm font-semibold text-white">
+                <span className="text-xs sm:text-sm font-semibold text-white break-words block">
                   {formData.quantity ? `${formData.quantity} units` : "Quantity not set"} 
                   {formData.budget ? ` | Budget: ${formData.budget}` : ""}
                 </span>
@@ -794,22 +796,22 @@ function EnquiryFormContainer() {
             </div>
 
             {/* Packaging Row */}
-            <div className="flex items-center gap-3">
-              <Layers className="w-5 h-5 text-red-555 flex-shrink-0" />
-              <div>
+            <div className="flex items-start gap-3 w-full min-w-0">
+              <Layers className="w-5 h-5 text-red-555 flex-shrink-0 mt-0.5" />
+              <div className="min-w-0 flex-1">
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Box Presentation Style</span>
-                <span className="text-sm font-semibold text-white">
+                <span className="text-xs sm:text-sm font-semibold text-white break-words block">
                   {formData.packagingChoice ? formData.packagingChoice : "Standard gifting box packaging"}
                 </span>
               </div>
             </div>
 
             {/* Delivery Address Row */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 w-full min-w-0">
               <MapPin className="w-5 h-5 text-red-555 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Delivery Address</span>
-                <span className="text-sm font-semibold text-white whitespace-pre-line">
+                <span className="text-xs sm:text-sm font-semibold text-white whitespace-pre-wrap break-words block">
                   {formData.deliveryAddress.trim() ? formData.deliveryAddress : "Delivery address not provided"}
                 </span>
               </div>
@@ -817,32 +819,32 @@ function EnquiryFormContainer() {
           </div>
 
           {/* Quick FAQ / trust notes */}
-          <div className="space-y-4 pt-2 text-left">
+          <div className="space-y-3 sm:space-y-4 pt-2 text-left w-full min-w-0">
             <div className="flex gap-3">
-              <div className="text-[#EF5350] mt-1"><CheckCircle2 className="w-4 h-4"/></div>
-              <div>
-                <h4 className="font-bold text-white text-xs tracking-wider uppercase">Free Sample Dispatches</h4>
-                <p className="text-gray-400 text-[10px] leading-relaxed">Corporate accounts qualify for physical proofing sample approvals before batch production.</p>
+              <div className="text-[#EF5350] mt-0.5 flex-shrink-0"><CheckCircle2 className="w-4 h-4"/></div>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-bold text-white text-xs tracking-wider uppercase break-words">Free Sample Dispatches</h4>
+                <p className="text-gray-400 text-[10px] leading-relaxed break-words">Corporate accounts qualify for physical proofing sample approvals before batch production.</p>
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="text-[#EF5350] mt-1"><CheckCircle2 className="w-4 h-4"/></div>
-              <div>
-                <h4 className="font-bold text-white text-xs tracking-wider uppercase">Enterprise Tax Invoicing</h4>
-                <p className="text-gray-400 text-[10px] leading-relaxed">All bulk invoices are provided with active GST input credit processing details.</p>
+              <div className="text-[#EF5350] mt-0.5 flex-shrink-0"><CheckCircle2 className="w-4 h-4"/></div>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-bold text-white text-xs tracking-wider uppercase break-words">Enterprise Tax Invoicing</h4>
+                <p className="text-gray-400 text-[10px] leading-relaxed break-words">All bulk invoices are provided with active GST input credit processing details.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-white/10 pt-6 space-y-2 text-xs">
-          <div className="flex items-center justify-between text-gray-450">
+        <div className="mt-6 sm:mt-8 border-t border-white/10 pt-4 sm:pt-6 space-y-2 text-xs w-full min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-gray-450">
             <span>Direct Hotline:</span>
-            <span className="font-bold text-white">{COMPANY_INFO.phone}</span>
+            <span className="font-bold text-white break-words">{COMPANY_INFO.phone}</span>
           </div>
-          <div className="flex items-center justify-between text-gray-450">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-gray-450">
             <span>Email Inquiry:</span>
-            <span className="font-bold text-white break-all">{COMPANY_INFO.email}</span>
+            <span className="font-bold text-white break-words [overflow-wrap:anywhere]">{COMPANY_INFO.email}</span>
           </div>
         </div>
       </div>
@@ -852,11 +854,11 @@ function EnquiryFormContainer() {
 
 export default function EnquiryPage() {
   return (
-    <div className="pt-28 pb-24 bg-gray-50 min-h-screen overflow-hidden max-w-full relative">
+    <div className="pt-24 sm:pt-28 pb-16 sm:pb-24 bg-gray-50 min-h-screen relative w-full max-w-full overflow-hidden">
       <BackgroundGradient />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-10">
+      <div className="max-w-6xl mx-auto px-3.5 sm:px-6 relative z-10 w-full min-w-0">
+        <div className="text-center mb-8 sm:mb-10 w-full min-w-0">
           <SectionHeading 
             title="Premium Request Curation"
             subtitle="Describe your occasion, packaging standards, and quantity guidelines. Our packaging and gifting specialists will compile custom mockups and quote sheets." 
@@ -866,10 +868,10 @@ export default function EnquiryPage() {
         </div>
 
         <Suspense fallback={
-          <div className="p-12 bg-white rounded-2xl border border-gray-250 shadow-xl flex items-center justify-center min-h-[600px]">
+          <div className="p-8 sm:p-12 bg-white rounded-2xl border border-gray-250 shadow-xl flex items-center justify-center min-h-[400px] sm:min-h-[600px] w-full min-w-0">
             <div className="text-center space-y-4">
-              <Loader2 className="w-12 h-12 animate-spin text-red-600 mx-auto" />
-              <p className="text-gray-500 text-sm font-bold animate-pulse">Initializing Premium Wizard...</p>
+              <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin text-red-600 mx-auto" />
+              <p className="text-gray-500 text-xs sm:text-sm font-bold animate-pulse">Initializing Premium Wizard...</p>
             </div>
           </div>
         }>
