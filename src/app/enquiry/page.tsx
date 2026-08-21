@@ -372,7 +372,7 @@ function EnquiryFormContainer() {
                     <div className="w-full min-w-0 max-w-full">
                       <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1 flex items-center gap-2 break-words [overflow-wrap:anywhere] max-w-full min-w-0">
                         <Package className="w-5 h-5 text-red-500 flex-shrink-0" />
-                        <span>Select Gifting Swag / Box Items</span>
+                        <span>SELECT PRODUCTS & GIFT ITEMS</span>
                       </h3>
                       <p className="text-xs text-gray-500 font-semibold break-words [overflow-wrap:anywhere] max-w-full min-w-0">Review preselected items or describe custom items you need produced.</p>
                     </div>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Share2, Clipboard, ShieldCheck, Box } from "lucide-react";
 import { useProductPreview } from "@/context/ProductPreviewContext";
 import { buildEnquiryUrl, getShortlistItemDisplayName } from "@/lib/enquiryHelper";
-import { getCanonicalSubcategoryName, getCanonicalCategoryName, cleanProductTitle, resolveDisplayName } from "@/lib/slugResolver";
+import { getCanonicalSubcategoryName, getCanonicalCategoryName, cleanProductTitle, resolveDisplayName, toSingularKitName } from "@/lib/slugResolver";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getDisplayCategoryName, getDisplaySubcategoryName, toDisplayName } from "@/lib/displayNames";
@@ -137,7 +137,7 @@ export function ProductPreviewModal() {
       category: product.category,
       subcategory: product.subcategory
     });
-    return toDisplayName(rawTitle);
+    return toSingularKitName(rawTitle);
   };
 
   return (

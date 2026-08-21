@@ -9,6 +9,7 @@ import {
   Home, RefreshCw, X, ShoppingBag, Info, MapPin 
 } from "lucide-react";
 import { ProductCard } from "@/components/ui/ProductCard";
+import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/Button";
 import { PROMO_SUBCATEGORY_SLUGS, PRODUCT_HIERARCHY } from "@/data/siteConfig";
 import { toDisplayName } from "@/lib/displayNames";
@@ -697,39 +698,15 @@ function ProductsPageContent() {
                 </div>
 
                 {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-gray-200">
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 border border-gray-250 rounded-xl text-xs font-bold hover:bg-white transition-all disabled:opacity-40 disabled:hover:bg-transparent"
-                    >
-                      Prev
-                    </button>
-                    
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={`w-9 h-9 rounded-xl text-xs font-bold transition-all duration-200 ${
-                          currentPage === i + 1
-                            ? "bg-[#D32F2F] text-white shadow-md shadow-[#D32F2F]/25 scale-105"
-                            : "bg-white border border-gray-200 text-gray-700 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-300"
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
-
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                      disabled={currentPage === totalPages}
-                      className="px-4 py-2 border border-gray-250 rounded-xl text-xs font-bold hover:bg-white transition-all disabled:opacity-40 disabled:hover:bg-transparent"
-                    >
-                      Next
-                    </button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalResults={filteredProducts.length}
+                  onPageChange={(page) => {
+                    setCurrentPage(page);
+                    window.scrollTo({ top: 350, behavior: "smooth" });
+                  }}
+                />
               </>
             )}
 

@@ -1,7 +1,27 @@
+import { getCanonicalSubcategoryName } from "@/lib/slugResolver";
+
 export const DISPLAY_NAME_MAP: Record<string, string> = {
   "Household Utilities": "Household",
   "Eid Kits": "Eid Hampers",
   "Christmas Kits": "Christmas Hampers",
+  "interior-designer-kits": "Interior Designer Kit",
+  "doctor-kits": "Doctor Kit",
+  "engineer-kits": "Engineer Kit",
+  "dealer-kits": "Dealer / Retailer Kit",
+  "retailer-kits": "Dealer / Retailer Kit",
+  "architect-kits": "Architect Kit",
+  "mason-kits": "Mason Kit",
+  "electrician-kits": "Electrician Kit",
+  "plumber-kits": "Plumber Kit",
+  "painter-kits": "Painter Kit",
+  "joining-kits": "Joining Kits",
+  "diwali-hampers": "Diwali Hampers",
+  "holi-hampers": "Holi Hampers",
+  "eid-kits": "Eid Hampers",
+  "christmas-kits": "Christmas Hampers",
+  "new-year-hampers": "New Year Hampers",
+  "womens-day-gifts": "Women's Day Gifts",
+  "festive-hampers": "Festive Hampers",
 };
 
 /**
@@ -27,6 +47,11 @@ export const toDisplayName = (name: string | null | undefined): string => {
     return "Christmas Hampers";
   }
   
+  const canonical = getCanonicalSubcategoryName(trimmed);
+  if (canonical && canonical !== trimmed) {
+    return canonical;
+  }
+
   return trimmed;
 };
 

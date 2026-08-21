@@ -5,6 +5,7 @@ import { destroyCloudinaryAssets } from "@/lib/admin/cloudinaryLifecycle";
 import { CategoryModel, SubcategoryModel } from "@/models/cmsModels";
 import { getCanonicalCategorySlug, getCanonicalCategoryName, getCanonicalSubcategorySlug, getCanonicalSubcategoryName } from "@/lib/slugResolver";
 import { PRODUCT_HIERARCHY } from "@/data/siteConfig";
+import { getKitDescription } from "@/lib/catalogDefaults";
 
 const toIso = (value: any) => value?.toISOString?.() || new Date().toISOString();
 
@@ -37,7 +38,7 @@ const mapSubcategory = (subcategory: any): SubcategoryRecord => {
     categoryId: subcategory.categoryId ? String(subcategory.categoryId) : undefined,
     category,
     parentGroup: subcategory.parentGroup || "",
-    description: subcategory.description,
+    description: subcategory.description || getKitDescription(slug) || getKitDescription(name),
     overview: subcategory.overview || "",
     image: subcategory.image || "",
     featuredImage: subcategory.featuredImage,
@@ -136,6 +137,7 @@ export async function listAllSubcategories() {
           slug: sub.slug,
           category: cat.slug,
           parentGroup: "",
+          description: getKitDescription(sub.slug) || getKitDescription(sub.name),
           image: "",
           active: true,
           createdAt: new Date().toISOString(),

@@ -510,6 +510,77 @@ Customization Highlights
 • Eco-friendly presentation folders & pouches`
 };
 
+export const SUBCATEGORY_DESCRIPTIONS: Record<string, string> = {
+  // Employee & Joining Kits
+  "joining-kits": "Complete employee onboarding kits featuring branded diaries, premium pens, stainless steel sippers, welcome cards, and custom gift boxes.",
+  "joining": "Complete employee onboarding kits featuring branded diaries, premium pens, stainless steel sippers, welcome cards, and custom gift boxes.",
+  "welcome-kits": "Essential corporate welcome boxes and custom swag kits designed to delight new employees and clients.",
+  "employee-kits": "Curated employee milestone and performance recognition packs designed for workplace appreciation.",
+  "male-grooming-kit": "Bespoke male grooming gift sets with premium personal care products and custom corporate branding.",
+  "female-grooming-kit": "Bespoke female grooming gift sets featuring luxury self-care essentials and custom corporate packaging.",
+  "executive-kits-sub": "Luxury executive gift boxes curated for leadership teams, senior management, and high-value corporate partners.",
+  "executive-kits": "Luxury executive gift boxes curated for leadership teams, senior management, and high-value corporate partners.",
+  "executive-gifts": "Luxury executive gift boxes curated for leadership teams, senior management, and high-value corporate partners.",
+
+  // Field & Industry Kits
+  "doctor-kits": "Medical-themed stationery, desk utilities, planners, and clinic-ready branded packs curated for healthcare professionals.",
+  "engineer-kits": "Safety tools, high-visibility accessories, technical notebooks, and durable field gear engineered for engineering professionals.",
+  "dealer-kits": "Dealer launch kits and retailer packages with sales tools, branding panels, partner folders, and channel welcome packs.",
+  "retailer-kits": "Retailer and dealer kits with sales tools, branding panels, and onboarding packages for trade partners.",
+  "architect-kits": "Sketchbooks, precision design tools, swatches, rulers, and premium studio presentation kits for architects and designers.",
+  "interior-designer-kits": "Designer sample kits with swatches, notebooks, rulers, elegant pens, and luxury presentation boxes for interior design professionals.",
+  "painter-kits": "Professional painter utility kits with branded overalls, caps, notebooks, and field gear for painting contractors and trade partners.",
+  "electrician-kits": "Safety and utility kits with gloves, voltage testers, notebooks, caps, and branded field packs for electrical professionals.",
+  "mason-kits": "Recognition and utility kits for masonry teams with durable workwear, heavy-duty drinkware, and rugged field packaging.",
+  "plumber-kits": "Functional trade kits featuring branded tool bags, water-resistant notebooks, drinkware, and plumbing accessories.",
+
+  // Festive & Occasion Hampers
+  "diwali-hampers": "Traditional brass diyas, gourmet dry fruits, artisanal chocolates, and customized festive greeting boxes for Diwali corporate gifting.",
+  "holi-hampers": "Organic herbal gulal, gourmet thandai mixes, traditional Indian sweets, and vibrant custom-branded boxes for corporate Holi celebrations.",
+  "eid-kits": "Curated gourmet Eid hampers featuring exotic dry fruits, premium dates, luxury attar, and custom brand greeting cards.",
+  "christmas-kits": "Festive plum cakes, artisanal cookies, Christmas ornaments, customized ceramic mugs, and hot chocolate mixes for holiday gifting.",
+  "new-year-hampers": "Executive annual diaries, desk calendars, insulated tumblers, and curated gourmet treats to kickstart the New Year.",
+  "womens-day-gifts": "Women's Day appreciation hampers featuring wellness items, scented candles, gourmet chocolates, and personalized thank-you cards.",
+  "festive-hampers": "Handcrafted assorted festive hampers designed for company milestones, annual celebrations, and client appreciation."
+};
+
+/**
+ * Single source of truth helper to resolve kit descriptions by slug or human-readable name.
+ */
+export function getKitDescription(slugOrName?: string): string | undefined {
+  if (!slugOrName) return undefined;
+  const clean = slugOrName.toLowerCase().trim();
+  
+  if (SUBCATEGORY_DESCRIPTIONS[clean]) {
+    return SUBCATEGORY_DESCRIPTIONS[clean];
+  }
+  
+  const norm = clean.replace(/[^a-z0-9]/g, "");
+  
+  if (norm.includes("doctor")) return SUBCATEGORY_DESCRIPTIONS["doctor-kits"];
+  if (norm.includes("engineer")) return SUBCATEGORY_DESCRIPTIONS["engineer-kits"];
+  if (norm.includes("dealer") || norm.includes("retailer")) return SUBCATEGORY_DESCRIPTIONS["dealer-kits"];
+  if (norm.includes("architect")) return SUBCATEGORY_DESCRIPTIONS["architect-kits"];
+  if (norm.includes("interiordesigner") || norm.includes("designer")) return SUBCATEGORY_DESCRIPTIONS["interior-designer-kits"];
+  if (norm.includes("painter")) return SUBCATEGORY_DESCRIPTIONS["painter-kits"];
+  if (norm.includes("electrician")) return SUBCATEGORY_DESCRIPTIONS["electrician-kits"];
+  if (norm.includes("mason")) return SUBCATEGORY_DESCRIPTIONS["mason-kits"];
+  if (norm.includes("plumber")) return SUBCATEGORY_DESCRIPTIONS["plumber-kits"];
+  if (norm.includes("joining") || norm.includes("onboarding")) return SUBCATEGORY_DESCRIPTIONS["joining-kits"];
+  if (norm.includes("diwali")) return SUBCATEGORY_DESCRIPTIONS["diwali-hampers"];
+  if (norm.includes("holi")) return SUBCATEGORY_DESCRIPTIONS["holi-hampers"];
+  if (norm.includes("eid")) return SUBCATEGORY_DESCRIPTIONS["eid-kits"];
+  if (norm.includes("christmas")) return SUBCATEGORY_DESCRIPTIONS["christmas-kits"];
+  if (norm.includes("newyear")) return SUBCATEGORY_DESCRIPTIONS["new-year-hampers"];
+  if (norm.includes("womens")) return SUBCATEGORY_DESCRIPTIONS["womens-day-gifts"];
+  if (norm.includes("festive") || norm.includes("hamper")) return SUBCATEGORY_DESCRIPTIONS["festive-hampers"];
+  if (norm.includes("malegrooming")) return SUBCATEGORY_DESCRIPTIONS["male-grooming-kit"];
+  if (norm.includes("femalegrooming")) return SUBCATEGORY_DESCRIPTIONS["female-grooming-kit"];
+  if (norm.includes("executive")) return SUBCATEGORY_DESCRIPTIONS["executive-kits-sub"];
+
+  return undefined;
+}
+
 export const CATEGORY_BRANDING_CAPABILITIES: Record<string, string[]> = {
   // --- Promotional Categories ---
   bags: [

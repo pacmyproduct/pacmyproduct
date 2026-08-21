@@ -12,7 +12,7 @@ import { localCatalogImage } from "@/lib/localCatalogImages";
 import { SafeImage } from "./SafeImage";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { resolveProductImage } from "@/lib/imageResolver";
-import { cleanProductTitle, resolveDisplayName } from "@/lib/slugResolver";
+import { cleanProductTitle, resolveDisplayName, toSingularKitName } from "@/lib/slugResolver";
 import { buildEnquiryUrl } from "@/lib/enquiryHelper";
 import { toDisplayName } from "@/lib/displayNames";
 
@@ -73,7 +73,7 @@ export function ProductCard({
 
   const getCardDisplayName = () => {
     const rawName = resolveDisplayName({ title, category, subcategory, displayName });
-    return isProduct ? rawName : toDisplayName(rawName);
+    return isProduct ? toSingularKitName(rawName) : toDisplayName(rawName);
   };
 
   const handleToggleShortlist = (e: React.MouseEvent) => {

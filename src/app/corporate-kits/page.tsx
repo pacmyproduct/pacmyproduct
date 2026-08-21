@@ -11,11 +11,12 @@ import { BackgroundGradient } from "@/components/layout/BackgroundGradient";
 import { Briefcase, HardHat, Gift, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { getCanonicalKitSlug, getSubcategorySlugAliases } from "@/lib/slugResolver";
+import { getCanonicalKitSlug, getSubcategorySlugAliases, getCanonicalSubcategoryName } from "@/lib/slugResolver";
 import { resolveProductImage, resolveSubcategoryImage } from "@/lib/imageResolver";
 import { buildEnquiryUrl } from "@/lib/enquiryHelper";
 import { PRODUCT_HIERARCHY } from "@/data/siteConfig";
 import { toDisplayName } from "@/lib/displayNames";
+import { getKitDescription } from "@/lib/catalogDefaults";
 import { clientCache } from "@/lib/clientCache";
 import { useNavigationCache } from "@/context/NavigationCacheContext";
 
@@ -414,8 +415,20 @@ function CorporateKitsContent() {
     return fallbackCorporateCards(currentOptions);
   }, [activeTab, corporateOptions, currentOptions, festiveOptions, products, selectedSubcategory, selectedKit]);
 
-  const selectedLabel = toDisplayName(selectedSubcategory?.name) || "Corporate Kits";
-  const selectedDescription = selectedSubcategory?.description || 
+  const selectedLabel = selectedSubcategory
+    ? toDisplayName(selectedSubcategory.name)
+    : selectedKit
+      ? toDisplayName(getCanonicalSubcategoryName(selectedKit))
+      : activeTab === "festive"
+        ? "Festive Hampers"
+        : activeTab === "industry"
+          ? "Field & Industry Kits"
+          : "Corporate Kits";
+
+  const selectedDescription =
+    selectedSubcategory?.description ||
+    getKitDescription(selectedKit) ||
+    getKitDescription(selectedSubcategory?.slug) ||
     "Explore premium, custom-branded onboarding kits, specialized field employee kits, and luxury festive hampers curated to elevate your brand perception.";
 
   const tabItems = [

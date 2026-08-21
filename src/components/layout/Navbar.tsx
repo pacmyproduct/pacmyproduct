@@ -325,7 +325,7 @@ export function Navbar() {
                             </p>
                           </div>
                           <Link
-                            href="/promotional-merchandise"
+                            href="/products"
                             onClick={() => setActiveDropdown(null)}
                             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#D32F2F] hover:text-[#C62828] transition-colors uppercase tracking-wider"
                           >

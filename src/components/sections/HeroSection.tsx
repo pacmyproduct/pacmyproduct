@@ -244,7 +244,7 @@ export function HeroSection() {
               Explore Corporate Kits
             </Link>
             <Link
-              href="/promotional-merchandise"
+              href="/products"
               className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-white/10 text-white border border-white/20 text-xs font-black uppercase tracking-wider backdrop-blur-md hover:bg-white/20 transition-all"
             >
               Browse Catalogue
@@ -298,7 +298,7 @@ export function HeroSection() {
                 className="h-10 sm:h-11 w-full sm:w-auto px-4 sm:px-6 rounded-2xl font-bold bg-[#D32F2F] hover:bg-[#C62828] text-white flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(211,47,47,0.25)] hover:shadow-[0_0_30px_rgba(211,47,47,0.35)] hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-200 border-0 cursor-pointer text-xs sm:text-sm"
                 asChild
               >
-                <Link href="/promotional-merchandise">
+                <Link href="/products">
                   Explore Products
                   <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>

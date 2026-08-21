@@ -2,6 +2,7 @@ import type { BrandRecord, CategoryRecord, ProductRecord, SubcategoryRecord } fr
 import { realCatalogImage } from "@/lib/catalogImages";
 import { localCatalogImage } from "@/lib/localCatalogImages";
 import { getCategoryPresentation } from "@/lib/catalogPresentation";
+import { getKitDescription } from "@/lib/catalogDefaults";
 
 const now = "2026-06-04T00:00:00.000Z";
 
@@ -124,6 +125,7 @@ export const PROFESSIONAL_SUBCATEGORIES: SubcategoryRecord[] = Object.entries(su
       slug,
       category: category.slug,
       parentGroup: category.parentGroup || "",
+      description: getKitDescription(slug) || getKitDescription(name),
       image: localCatalogImage(name) || category.image || imagePools.giftbox[0],
       active: true,
       createdAt: now,

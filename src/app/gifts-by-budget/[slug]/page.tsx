@@ -10,6 +10,7 @@ import {
   Home, RefreshCw, X, ShoppingBag, MapPin, ArrowRight, Loader2
 } from "lucide-react";
 import { ProductCard } from "@/components/ui/ProductCard";
+import { Pagination } from "@/components/ui/Pagination";
 import { getBudgetsConfig } from "@/app/87564/admin/budgets/actions";
 import type { BudgetConfigItem } from "@/services/admin/budgetCollectionService";
 import { normalizeBudgetRange, budgetsMatch } from "@/app/gifts-by-budget/page";
@@ -595,29 +596,15 @@ function BudgetCollectionContent() {
                     </div>
 
                     {/* Pagination */}
-                    {totalPages > 1 && (
-                      <div className="flex justify-center items-center gap-2 pt-6 border-t border-gray-200">
-                        {Array.from({ length: totalPages }).map((_, i) => {
-                          const pageNum = i + 1;
-                          return (
-                            <button
-                              key={pageNum}
-                              onClick={() => {
-                                setCurrentPage(pageNum);
-                                window.scrollTo({ top: 0, behavior: "smooth" });
-                              }}
-                              className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${
-                                currentPage === pageNum
-                                  ? "bg-[#D32F2F] text-white shadow-md shadow-[#D32F2F]/20"
-                                  : "bg-white text-gray-600 hover:bg-[#FAF9F6] border border-gray-200"
-                              }`}
-                            >
-                              {pageNum}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      totalResults={filteredProducts.length}
+                      onPageChange={(pageNum) => {
+                        setCurrentPage(pageNum);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                    />
                   </div>
                 ) : (
                   <div className="text-center py-20 bg-white border border-gray-200 rounded-3xl p-8 max-w-md mx-auto shadow-sm">
