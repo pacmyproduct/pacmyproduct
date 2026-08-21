@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # Step 4: Build Next.js full-stack production application (output: standalone)
+      # Step 4: Build Next.js full-stack production application
       - name: Build Next.js Production Application
         env:
           NODE_ENV: production
@@ -44,13 +44,40 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         run: npm run build
 
-      # Step 5: Prepare standalone bundle for production deployment
-      - name: Prepare Standalone Assets
+      # Step 5: Safely remove stale remote public_html/.next directory to prevent 550 file/folder collisions
+      - name: Clean Remote Stale .next Directory
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT || 21 }}
         run: |
-          cp -r public .next/standalone/public
-          cp -r .next/static .next/standalone/.next/static
+          npm install basic-ftp --no-save
+          node -e '
+            const ftp = require("basic-ftp");
+            async function run() {
+              const client = new ftp.Client(30000);
+              try {
+                await client.access({
+                  host: process.env.FTP_SERVER,
+                  user: process.env.FTP_USERNAME,
+                  password: process.env.FTP_PASSWORD,
+                  port: parseInt(process.env.FTP_PORT || "21"),
+                  secure: false
+                });
+                console.log("Safely removing stale public_html/.next directory before upload...");
+                await client.removeDir("public_html/.next");
+                console.log("Successfully removed stale public_html/.next directory.");
+              } catch (err) {
+                console.log("Remote .next cleanup status:", err.message);
+              } finally {
+                client.close();
+              }
+            }
+            run();
+          ' || true
 
-      # Step 6: Deploy standalone production Node application to Hostinger via FTP
+      # Step 6: Deploy production application to Hostinger public_html via FTP
       - name: Deploy Production Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -59,6 +86,24 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT || 21 }}
           protocol: ftp
-          local-dir: .next/standalone/
-          server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}
+          server-dir: public_html/
           dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/node_modules/**
+            **/.env*
+            **/.edge-brands-shot/**
+            **/.chrome-brands-shot/**
+            **/screenshots/**
+            **/scratch/**
+            **/docs/**
+            **/coverage/**
+            **/*.log
+            **/image-audit-report.json
+            **/cloudinary-*.json
+            **/CLOUDINARY_*.md
+            **/DEPLOYMENT_READINESS_REPORT.md
+            **/README.md
+            **/publiclogosfallback.txt
