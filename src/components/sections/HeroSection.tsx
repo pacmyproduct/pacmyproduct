@@ -167,7 +167,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative min-h-[100svh] lg:min-h-[70vh] pt-[72px] pb-5 sm:pt-[88px] sm:pb-8 lg:pt-28 lg:pb-16 flex items-center overflow-hidden">
+    <section className="relative lg:min-h-[70vh] pt-[72px] pb-8 sm:pt-[88px] sm:pb-10 lg:pt-28 lg:pb-16 flex items-center overflow-hidden">
 
       {/* ── Background Video ── */}
       <motion.div
@@ -207,7 +207,7 @@ export function HeroSection() {
           MOBILE HERO
          ══════════════════════════════════════════════════════════════════════ */}
       <div className="relative z-10 w-full px-4 sm:px-6 lg:hidden">
-        <div className="mx-auto flex min-h-[calc(100svh-92px)] max-w-md flex-col justify-start">
+        <div className="mx-auto flex max-w-md flex-col justify-start">
 
           {/* Heading */}
           <motion.h1
@@ -249,6 +249,24 @@ export function HeroSection() {
             >
               Browse Catalogue
             </Link>
+          </div>
+
+          {/* Sub-hero Occasion Text */}
+          <div className="mt-8 pt-2 pb-4 text-center flex flex-col items-center">
+            <h2 className="text-xl min-[375px]:text-2xl font-black text-white tracking-tight leading-snug">
+              <AnimatedWords
+                text="Gifting Made Simple for Every Occasion"
+                delay={t(1.75)}
+                step={0.06}
+              />
+            </h2>
+            <p className="mt-2 text-xs min-[375px]:text-sm font-medium text-white/80 max-w-xs leading-relaxed">
+              <AnimatedWords
+                text="From employee appreciation to client celebrations, we curate it all."
+                delay={t(2.15)}
+                step={0.04}
+              />
+            </p>
           </div>
         </div>
       </div>
