@@ -181,7 +181,8 @@ export function HeroSection() {
           muted
           loop
           playsInline
-          preload="auto"
+          poster="/posterimage.webp"
+          preload="metadata"
           className="absolute inset-0 h-full w-full object-cover"
         >
           <source src="/gifting.mp4" type="video/mp4" />

@@ -32,6 +32,15 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased overflow-x-hidden max-w-full`}
       suppressHydrationWarning
     >
+      <head>
+        <link
+          rel="preload"
+          href="/posterimage.webp"
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+        />
+      </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col relative bg-white text-gray-900 selection:bg-gray-900 selection:text-white overflow-x-hidden max-w-full">
         <AppChrome>{children}</AppChrome>
       </body>
